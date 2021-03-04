@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.caloriecounter.main.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_today"
+        android:name="com.example.caloriecounter.main.ui.today.TodayFragment"
+        android:label="Today"
+        tools:layout="@layout/fragment_today" />
+
+    <fragment
+        android:id="@+id/nav_week"
+        android:name="com.example.caloriecounter.main.ui.week.WeekFragment"
+        android:label="Week"
+        tools:layout="@layout/fragment_week" />
+
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.example.caloriecounter.main.ui.help.HelpFragment"
+        android:label="Help"
+        tools:layout="@layout/fragment_help" />
+
+</navigation>

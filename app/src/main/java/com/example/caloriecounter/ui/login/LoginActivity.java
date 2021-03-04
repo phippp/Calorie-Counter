@@ -24,8 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caloriecounter.R;
-import com.example.caloriecounter.ui.login.LoginViewModel;
-import com.example.caloriecounter.ui.login.LoginViewModelFactory;
+import com.example.caloriecounter.main.MyApp;
 import com.example.caloriecounter.ui.register.RegisterActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -77,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                Intent intent = new Intent(LoginActivity.this,)
+                Intent intent = new Intent(LoginActivity.this, MyApp.class);
                 startActivity(intent);
                 finish();
             }
