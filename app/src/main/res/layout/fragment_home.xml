@@ -21,4 +21,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/ihatemylife"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Yes"
+        android:onClick="livingHurts"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

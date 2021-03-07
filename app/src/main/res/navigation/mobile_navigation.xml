@@ -28,5 +28,16 @@
         android:name="com.example.caloriecounter.main.ui.help.HelpFragment"
         android:label="Help"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/add_food"
+        android:name="com.example.caloriecounter.add_food"
+        android:label="fragment_add_food"
+        tools:layout="@layout/fragment_add_food" />
+    <fragment
+        android:id="@+id/search_food"
+        android:name="com.example.caloriecounter.search_food"
+        android:label="fragment_search_food"
+        tools:layout="@layout/fragment_search_food" />
+
 
 </navigation>

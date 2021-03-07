@@ -20,5 +20,9 @@
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Help" />
+        <item
+            android:id="@+id/nav_fml"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Help" />
     </group>
 </menu>
