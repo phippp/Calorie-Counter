@@ -23,13 +23,6 @@ public class TodayFragment extends Fragment {
         todayViewModel =
                 new ViewModelProvider(this).get(TodayViewModel.class);
         View root = inflater.inflate(R.layout.fragment_today, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
-        todayViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 }
