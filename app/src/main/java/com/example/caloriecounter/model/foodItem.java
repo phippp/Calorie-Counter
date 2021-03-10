@@ -1,4 +1,4 @@
-package com.example.caloriecounter.data.food;
+package com.example.caloriecounter.model;
 
 import org.json.JSONObject;
 
@@ -25,4 +25,5 @@ public class foodItem {
     public JSONObject getData() {
         return data;
     }
+
 }

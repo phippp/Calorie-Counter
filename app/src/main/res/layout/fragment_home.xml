@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context=".main.ui.home.HomeFragment">
+    tools:context=".activities.fragments.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/calorie_layout"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"
             android:layout_marginRight="48dp"
-            android:onClick="livingHurts"
+            android:onClick="changeToSearchFragment"
             android:text="Add Food"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

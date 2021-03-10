@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.caloriecounter.main.ui.home.HomeFragment"
+        android:name="com.example.caloriecounter.activities.fragments.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_today"
-        android:name="com.example.caloriecounter.main.ui.today.TodayFragment"
+        android:name="com.example.caloriecounter.activities.fragments.TodayFragment"
         android:label="Today"
         tools:layout="@layout/fragment_today" />
 
     <fragment
         android:id="@+id/nav_week"
-        android:name="com.example.caloriecounter.main.ui.week.WeekFragment"
+        android:name="com.example.caloriecounter.activities.fragments.WeekFragment"
         android:label="Week"
         tools:layout="@layout/fragment_week" />
 
     <fragment
         android:id="@+id/nav_help"
-        android:name="com.example.caloriecounter.main.ui.help.HelpFragment"
+        android:name="com.example.caloriecounter.activities.fragments.HelpFragment"
         android:label="Help"
         tools:layout="@layout/fragment_help" />
     <fragment
@@ -35,7 +35,7 @@
         tools:layout="@layout/fragment_add_food" />
     <fragment
         android:id="@+id/search_food"
-        android:name="com.example.caloriecounter.search_food"
+        android:name="com.example.caloriecounter.activities.fragments.SearchFoodFragment"
         android:label="fragment_search_food"
         tools:layout="@layout/fragment_search_food" />
 

@@ -1,10 +1,12 @@
-package com.example.caloriecounter;
+package com.example.caloriecounter.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.example.caloriecounter.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

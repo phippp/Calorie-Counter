@@ -1,4 +1,4 @@
-package com.example.caloriecounter.data.food;
+package com.example.caloriecounter.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.model.foodItem;
 
 import org.json.JSONObject;
 
@@ -40,7 +41,7 @@ public class FoodListAdapter extends ArrayAdapter<foodItem> {
         TextView tvName = convertView.findViewById(R.id.food_name);
         tvName.setText(name);
         TextView tvCal = convertView.findViewById(R.id.food_calories);
-        tvCal.setText(String.valueOf(calories)+" calories per serving");
+        tvCal.setText(calories +" calories per serving");
 
         return convertView;
     }
