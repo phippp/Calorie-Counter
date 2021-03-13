@@ -2,13 +2,13 @@ package com.example.caloriecounter.model;
 
 import org.json.JSONObject;
 
-public class foodItem {
+public class FoodItem {
 
     private String name;
     private JSONObject data;
     private double calories;
 
-    public foodItem(String name, JSONObject object, double cal){
+    public FoodItem(String name, JSONObject object, double cal){
         this.name = name;
         this.data = object;
         this.calories = cal;

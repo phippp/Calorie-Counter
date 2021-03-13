@@ -29,7 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.caloriecounter.activities.AddFood;
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.model.FoodListAdapter;
-import com.example.caloriecounter.model.foodItem;
+import com.example.caloriecounter.model.FoodItem;
 import com.example.caloriecounter.activities.MyApp;
 
 import org.json.JSONArray;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class SearchFoodFragment extends Fragment {
 
     public EditText searchBox;
-    public ArrayList<foodItem> listItems=new ArrayList<foodItem>();
+    public ArrayList<FoodItem> listItems=new ArrayList<FoodItem>();
     public FoodListAdapter adapter;
     private RequestQueue queue;
 
@@ -65,7 +65,7 @@ public class SearchFoodFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), AddFood.class);
-                foodItem f = adapter.getItem(position);
+                FoodItem f = adapter.getItem(position);
                 intent.putExtra("data",f.getData().toString());
                 startActivity(intent);
             }
@@ -97,15 +97,15 @@ public class SearchFoodFragment extends Fragment {
                                 Log.d("RESPONSE", response.toString());
                                 //Access parsed items
                                 JSONArray arr = response.getJSONArray("parsed");
-                                for (int i = 0; i < arr.length(); i++) {
-                                    JSONObject food = arr.getJSONObject(i);
-                                    adapter.add(new foodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
-                                }
+//                                for (int i = 0; i < arr.length(); i++) {
+//                                    JSONObject food = arr.getJSONObject(i);
+//                                    adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
+//                                }
                                 //Access hints items
                                 arr = response.getJSONArray("hints");
                                 for (int i = 0; i < arr.length(); i++) {
                                     JSONObject food = arr.getJSONObject(i);
-                                    adapter.add(new foodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
+                                    adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
                                 }
 
                             } catch (JSONException e) {

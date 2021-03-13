@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,14 +14,11 @@ import androidx.lifecycle.Observer;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.model.InputValidation;
-import com.example.caloriecounter.model.LoginFormState;
 import com.example.caloriecounter.model.RegisterFormState;
-import com.example.caloriecounter.model.User;
+import com.example.caloriecounter.model.database.User;
 import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -15,12 +15,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class FoodListAdapter extends ArrayAdapter<FoodItem> {
+public class NutrientListAdapter extends ArrayAdapter<NutrientItem> {
 
     private Context mContext;
     int mResource;
 
-    public FoodListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<FoodItem> objects) {
+    public NutrientListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<NutrientItem> objects) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
@@ -29,18 +29,18 @@ public class FoodListAdapter extends ArrayAdapter<FoodItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         String name = getItem(position).getName();
-        JSONObject data = getItem(position).getData();
-        double calories = getItem(position).getCalories();
+        double qty = getItem(position).getQty();
+        String unit = getItem(position).getUnit();
 
-        FoodItem food = new FoodItem(name,data,calories);
+        NutrientItem nutrientItem = new NutrientItem(name,qty,unit);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 
-        TextView tvName = convertView.findViewById(R.id.food_name);
+        TextView tvName = convertView.findViewById(R.id.nutrient_name);
         tvName.setText(name);
-        TextView tvCal = convertView.findViewById(R.id.food_calories);
-        tvCal.setText(calories +" calories per serving");
+        TextView tvVal = convertView.findViewById(R.id.nutrient_value);
+        tvVal.setText(qty + unit);
 
         return convertView;
     }
