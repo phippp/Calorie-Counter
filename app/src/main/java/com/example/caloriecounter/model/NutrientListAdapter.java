@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 
 import com.example.caloriecounter.R;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class NutrientListAdapter extends ArrayAdapter<NutrientItem> {
@@ -40,7 +38,7 @@ public class NutrientListAdapter extends ArrayAdapter<NutrientItem> {
         TextView tvName = convertView.findViewById(R.id.nutrient_name);
         tvName.setText(name);
         TextView tvVal = convertView.findViewById(R.id.nutrient_value);
-        tvVal.setText(qty + unit);
+        tvVal.setText(String.format("%.2f",qty) + unit);
 
         return convertView;
     }

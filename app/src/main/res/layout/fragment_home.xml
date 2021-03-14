@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
@@ -85,7 +86,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/water_decrease"
                 android:layout_width="50dp"
                 android:layout_height="45dp"
                 android:text="-"
@@ -93,7 +94,7 @@
                 tools:layout_editor_absoluteY="0dp" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/water_increase"
                 android:layout_width="50dp"
                 android:layout_height="45dp"
                 android:text="+"
@@ -101,15 +102,15 @@
                 tools:layout_editor_absoluteY="1dp" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/water_display"
                 android:layout_width="50dp"
                 android:layout_height="fill_parent"
                 android:gravity="center"
                 android:text="0"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button3"
-                app:layout_constraintStart_toEndOf="@+id/button2"
+                app:layout_constraintEnd_toStartOf="@+id/water_increase"
+                app:layout_constraintStart_toEndOf="@+id/water_decrease"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

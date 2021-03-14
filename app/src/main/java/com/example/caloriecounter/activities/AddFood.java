@@ -47,6 +47,8 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private RadioButton servingOption;
     private Button addBtn;
     private Button mapsBtn;
+    private Button addQty;
+    private Button minusQty;
     private EditText input;
     private String brand;
     private double calories;
@@ -118,7 +120,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                     case R.id.option_grams:
                         try {
                             curr = Integer.parseInt(input.getText().toString());
-                            input.setText(String.valueOf((int) (curr * serving)));
+                            input.setText(String.valueOf((int) Math.round(curr * serving)));
                         } catch (NumberFormatException e){
                             e.printStackTrace();
                             input.setText(String.valueOf((int)serving));
@@ -127,7 +129,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                     case R.id.option_portion:
                         try {
                             curr = Integer.parseInt(input.getText().toString());
-                            input.setText(String.valueOf((int) (curr / serving)));
+                            input.setText(String.valueOf((int) Math.round(curr / serving)));
                         }catch (NumberFormatException e){
                             e.printStackTrace();
                             input.setText("1");
@@ -140,18 +142,40 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         servingOption = findViewById(R.id.option_portion);
         mapsBtn = findViewById(R.id.maps_button);
         addBtn = findViewById(R.id.add_food_button);
+        minusQty = findViewById(R.id.minus_qty);
+        addQty = findViewById(R.id.add_qty);
+        addQty.setOnClickListener(this);
+        minusQty.setOnClickListener(this);
         mapsBtn.setOnClickListener(this);
         addBtn.setOnClickListener(this);
         if(data.getJSONObject("food").has("brand")){
             mapsBtn.setVisibility(View.VISIBLE);
             brand = data.getJSONObject("food").getString("brand");
-            brand.replaceAll(" ", "%20");
+            brand = brand.replaceAll(" ", "%20");
         }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.add_qty:
+                try {
+                    input.setText(String.valueOf(Integer.parseInt(input.getText().toString()) + 1));
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                    input.setText("1");
+                }
+                break;
+            case R.id.minus_qty:
+                try {
+                    if (Integer.parseInt(input.getText().toString()) > 1) {
+                        input.setText(String.valueOf(Integer.parseInt(input.getText().toString()) - 1));
+                    }
+                } catch(NumberFormatException e){
+                    e.printStackTrace();
+                    input.setText("1");
+                }
+                break;
             case R.id.maps_button:
                 Uri geo = Uri.parse("http://maps.google.com/maps?q="+brand);
                 Intent maps = new Intent(Intent.ACTION_VIEW,geo);

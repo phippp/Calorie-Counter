@@ -7,8 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.caloriecounter.model.FoodItem;
 import com.example.caloriecounter.model.database.Calories;
 import com.example.caloriecounter.model.database.User;
+import com.example.caloriecounter.model.database.Water;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -96,6 +103,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void addWater(Water water){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_WATER_USER_ID, water.getUser_id());
+        values.put(COLUMN_WATER_DATE, water.getDate());
+        values.put(COLUMN_WATER_VALUE, water.getValue());
+
+        db.insert(TABLE_WATER, null, values);
+        db.close();
+    }
+
     public boolean checkUser(String username, String password){
         String columns[] = {
                 COLUMN_USER_ID
@@ -162,14 +180,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public double getTotalFood(int user_id){
+    public double getTotalFood(int user_id, String date){
         double total = 0.0;
         String columns[] = {
                 COLUMN_CALORIES_VALUE
         };
         SQLiteDatabase db = this.getWritableDatabase();
-        String selection = COLUMN_CALORIES_USER_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(user_id)};
+        String selection = COLUMN_CALORIES_USER_ID + " = ?" + " AND " + COLUMN_CALORIES_DATE + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date};
         Cursor cursor = db.query(TABLE_CALORIES,
                 columns,
                 selection,
@@ -183,4 +201,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return total;
     }
+
+    public FoodItem[] getFoodItems(int user_id, String date){
+        ArrayList<FoodItem> list = new ArrayList<>();
+        String columns[] = {
+                COLUMN_CALORIES_VALUE,
+                COLUMN_CALORIES_DATA
+        };
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_USER_ID + " = ?" + " AND " + COLUMN_CALORIES_DATE + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date};
+        Cursor cursor = db.query(TABLE_CALORIES,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        while(cursor.moveToNext()){
+            JSONObject obj = new JSONObject();
+            String name = "";
+            double val = cursor.getDouble(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
+            try{
+                obj = new JSONObject(cursor.getString(cursor.getColumnIndex(COLUMN_CALORIES_DATA)));
+                name = obj.getJSONObject("food").getString("label");
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+            list.add(new FoodItem(name,obj,val));
+        }
+        return list.toArray(new FoodItem[0]);
+    }
+
+    public int getWater(int user_id, String date){
+        int num = 0;
+        String columns[] = {
+                COLUMN_WATER_VALUE
+        };
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_WATER_USER_ID + " = ?" + " AND " + COLUMN_WATER_DATE + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date};
+        Cursor cursor = db.query(TABLE_WATER,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        while(cursor.moveToNext()){
+            num = cursor.getInt(cursor.getColumnIndex(COLUMN_WATER_VALUE));
+        }
+        cursor.close();
+        db.close();
+        return num;
+    }
+
+    public void updateWater(int user_id, String date,int val){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_WATER_VALUE, val);
+            String selection = COLUMN_WATER_USER_ID + " =?" + " AND " + COLUMN_WATER_DATE + " =?";
+            String[] selectionArgs = {String.valueOf(user_id), date};
+            db.update(TABLE_WATER, cv, selection, selectionArgs);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

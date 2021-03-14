@@ -15,12 +15,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class FoodListAdapter extends ArrayAdapter<FoodItem> {
+public class DatabaseFoodListAdapter extends ArrayAdapter<FoodItem> {
 
     private Context mContext;
     int mResource;
 
-    public FoodListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<FoodItem> objects) {
+    public DatabaseFoodListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<FoodItem> objects) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
@@ -40,7 +40,7 @@ public class FoodListAdapter extends ArrayAdapter<FoodItem> {
         TextView tvName = convertView.findViewById(R.id.food_name);
         tvName.setText(name);
         TextView tvCal = convertView.findViewById(R.id.calories_value);
-        tvCal.setText(String.format("%.2f",calories) +" calories per serving");
+        tvCal.setText(String.format("%.2f",calories) +" calories");
 
         return convertView;
     }
