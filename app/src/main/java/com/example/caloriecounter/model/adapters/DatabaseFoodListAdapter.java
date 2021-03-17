@@ -1,4 +1,4 @@
-package com.example.caloriecounter.model;
+package com.example.caloriecounter.model.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,14 +11,16 @@ import androidx.annotation.NonNull;
 
 import com.example.caloriecounter.R;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
-public class NutrientListAdapter extends ArrayAdapter<NutrientItem> {
+public class DatabaseFoodListAdapter extends ArrayAdapter<FoodItem> {
 
     private Context mContext;
     int mResource;
 
-    public NutrientListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<NutrientItem> objects) {
+    public DatabaseFoodListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<FoodItem> objects) {
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
@@ -27,18 +29,18 @@ public class NutrientListAdapter extends ArrayAdapter<NutrientItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         String name = getItem(position).getName();
-        double qty = getItem(position).getQty();
-        String unit = getItem(position).getUnit();
+        JSONObject data = getItem(position).getData();
+        double calories = getItem(position).getCalories();
 
-        NutrientItem nutrientItem = new NutrientItem(name,qty,unit);
+        FoodItem food = new FoodItem(name,data,calories);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 
-        TextView tvName = convertView.findViewById(R.id.nutrient_name);
+        TextView tvName = convertView.findViewById(R.id.food_name);
         tvName.setText(name);
-        TextView tvVal = convertView.findViewById(R.id.nutrient_value);
-        tvVal.setText(String.format("%.2f",qty) + unit);
+        TextView tvCal = convertView.findViewById(R.id.calories_value);
+        tvCal.setText(String.format("%.2f",calories) +" calories");
 
         return convertView;
     }

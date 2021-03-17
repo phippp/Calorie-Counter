@@ -31,13 +31,27 @@
     <fragment
         android:id="@+id/add_food"
         android:name="com.example.caloriecounter.add_food"
-        android:label="fragment_add_food"
-        tools:layout="@layout/fragment_add_food" />
+        android:label="Add Food"
+        tools:layout="@layout/activity_add_food" />
     <fragment
         android:id="@+id/search_food"
         android:name="com.example.caloriecounter.activities.fragments.SearchFoodFragment"
-        android:label="fragment_search_food"
+        android:label="Search Food"
         tools:layout="@layout/fragment_search_food" />
-
+    <fragment
+        android:id="@+id/add_food_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.AddFoodFragment"
+        android:label="Add Food"
+        tools:layout="@layout/activity_add_food"/>
+    <fragment
+        android:id="@+id/food_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.FoodFragment"
+        android:label="Food"
+        tools:layout="@layout/fragment_food"/>
+    <fragment
+        android:id="@+id/water_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.WaterFragment"
+        android:label="Water"
+        tools:layout="@layout/fragment_water"/>
 
 </navigation>

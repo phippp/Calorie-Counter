@@ -1,4 +1,4 @@
-package com.example.caloriecounter.model;
+package com.example.caloriecounter.model.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

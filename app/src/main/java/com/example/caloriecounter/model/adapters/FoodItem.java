@@ -1,4 +1,4 @@
-package com.example.caloriecounter.model;
+package com.example.caloriecounter.model.adapters;
 
 import org.json.JSONObject;
 

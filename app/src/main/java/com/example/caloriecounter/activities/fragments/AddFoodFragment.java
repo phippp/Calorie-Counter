@@ -1,13 +1,14 @@
-package com.example.caloriecounter.activities;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.caloriecounter.activities.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -15,7 +16,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.model.adapters.NutrientItem;
 import com.example.caloriecounter.model.adapters.NutrientListAdapter;
 import com.example.caloriecounter.model.database.Calories;
@@ -30,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class AddFood extends AppCompatActivity implements View.OnClickListener {
+public class AddFoodFragment extends Fragment implements View.OnClickListener{
 
     private JSONObject data;
     private DatabaseHelper databaseHelper;
@@ -50,36 +56,32 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private double calories;
     private double serving; //weight
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_food);
-        databaseHelper = new DatabaseHelper(this);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_add_food, container, false);
+    }
 
-        adapter = new NutrientListAdapter(getApplicationContext(),R.layout.nutrient_list,listItems);
-        ListView lv = (ListView) findViewById(R.id.nutrient_list);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String str = getArguments().getString("data");
+        databaseHelper = new DatabaseHelper(getActivity());
+
+        adapter = new NutrientListAdapter(getActivity().getApplicationContext(),R.layout.nutrient_list,listItems);
+        ListView lv = (ListView) requireActivity().findViewById(R.id.nutrient_list);
         lv.setAdapter(adapter);
 
-        Intent in = getIntent();
-        if(in.hasExtra("data")){
-            try {
-                data = new JSONObject(in.getStringExtra("data"));
-                JSONArray measures = data.getJSONArray("measures");
-                for(int i = 0; i < measures.length(); i++){
-                    JSONObject temp = measures.getJSONObject(i);
-                    if(temp.has("label") ){
-                        if(temp.getString("label").equals("Serving")){
-                            serving = temp.getDouble("weight");
-                            Log.d("LOL","There are " + serving + "g in a serving");
-                        }
+        try {
+            data = new JSONObject(str);
+            JSONArray measures = data.getJSONArray("measures");
+            for(int i = 0; i < measures.length(); i++){
+                JSONObject temp = measures.getJSONObject(i);
+                if(temp.has("label") ){
+                    if(temp.getString("label").equals("Serving")){
+                        serving = temp.getDouble("weight");
+                        Log.d("LOL","There are " + serving + "g in a serving");
                     }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        }
-
-        try {
             initViews();
             title.setText(data.getJSONObject("food").getString("label"));
             JSONObject nutrients = data.getJSONObject("food").getJSONObject("nutrients");
@@ -105,9 +107,9 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void initViews() throws JSONException {
-        title = findViewById(R.id.food_title);
-        input = findViewById(R.id.enter_number);
-        radioGroup = findViewById(R.id.quantity_toggler);
+        title = requireActivity().findViewById(R.id.food_title);
+        input = requireActivity().findViewById(R.id.enter_number);
+        radioGroup = requireActivity().findViewById(R.id.quantity_toggler);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -134,12 +136,12 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                 }
             }
         });
-        gramsOption = findViewById(R.id.option_grams);
-        servingOption = findViewById(R.id.option_portion);
-        mapsBtn = findViewById(R.id.maps_button);
-        addBtn = findViewById(R.id.add_food_button);
-        minusQty = findViewById(R.id.minus_qty);
-        addQty = findViewById(R.id.add_qty);
+        gramsOption = requireActivity().findViewById(R.id.option_grams);
+        servingOption = requireActivity().findViewById(R.id.option_portion);
+        mapsBtn = requireActivity().findViewById(R.id.maps_button);
+        addBtn = requireActivity().findViewById(R.id.add_food_button);
+        minusQty = requireActivity().findViewById(R.id.minus_qty);
+        addQty = requireActivity().findViewById(R.id.add_qty);
         addQty.setOnClickListener(this);
         minusQty.setOnClickListener(this);
         mapsBtn.setOnClickListener(this);
@@ -180,10 +182,8 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.add_food_button:
                 Calories item = new Calories();
-                SharedPreferences pref = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-                String username = pref.getString("username",null);
-                String password = pref.getString("password",null);
-                int user_id = databaseHelper.getUserId(username,password);
+                //int user_id =
+                int user_id = ((MyApp)getActivity()).getUser_id();
                 double num;
                 try {
                     if (radioGroup.getCheckedRadioButtonId() == R.id.option_grams) {
@@ -197,11 +197,10 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                         item.setValue(num);
                         item.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                         databaseHelper.addCalories(item);
-                        finish();
                     }
                 }catch (NumberFormatException e){
                     e.printStackTrace();
-                    Snackbar snack = Snackbar.make(findViewById(R.id.container),"Invalid number try again!",Snackbar.LENGTH_LONG);
+                    Snackbar snack = Snackbar.make(requireActivity().findViewById(R.id.container),"Invalid number try again!",Snackbar.LENGTH_LONG);
                     snack.show();
                 }
                 break;

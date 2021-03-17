@@ -1,4 +1,4 @@
-package com.example.caloriecounter.model;
+package com.example.caloriecounter.model.adapters;
 
 public class NutrientItem {
 

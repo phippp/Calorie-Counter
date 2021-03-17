@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calorie_layout">
+        app:layout_constraintTop_toBottomOf="@+id/calorie_layout_home">
 
         <ImageView
             android:id="@+id/imageView4"
@@ -26,11 +26,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:contentDescription="@string/water_bottle_image"
-            android:src="@drawable/water_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.529" />
+            app:layout_constraintVertical_bias="0.529"
+            app:srcCompat="@drawable/baseline_local_drink_black_24" />
 
         <TextView
             android:id="@+id/water_today"
@@ -55,7 +55,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/calorie_layout"
+        android:id="@+id/calorie_layout_home"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginTop="80dp"

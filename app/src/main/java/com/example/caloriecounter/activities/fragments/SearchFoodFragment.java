@@ -6,8 +6,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,8 +31,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.caloriecounter.activities.AddFood;
 import com.example.caloriecounter.R;
-import com.example.caloriecounter.model.FoodListAdapter;
-import com.example.caloriecounter.model.FoodItem;
+import com.example.caloriecounter.model.adapters.FoodListAdapter;
+import com.example.caloriecounter.model.adapters.FoodItem;
 import com.example.caloriecounter.activities.MyApp;
 
 import org.json.JSONArray;
@@ -45,18 +48,31 @@ public class SearchFoodFragment extends Fragment {
     public FoodListAdapter adapter;
     private RequestQueue queue;
 
+    private boolean tablet;
+    private FrameLayout fl;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_search_food, container, false);
-        //Set fragment title
-        ((MyApp) getActivity()).setActionBarTitle("Search Food");
+        return inflater.inflate(R.layout.fragment_search_food, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(getActivity().findViewById(R.id.extra_fragment)!=null){
+            tablet = true;
+            fl = getActivity().findViewById(R.id.extra_fragment);
+        }
+        else {
+            tablet = false;
+        }
         //get searchBox (EditText) and button
-        searchBox = view.findViewById(R.id.searchBox);
-        Button btn = (Button) view.findViewById(R.id.button);
+        searchBox = getActivity().findViewById(R.id.searchBox);
+        Button btn = (Button) getActivity().findViewById(R.id.button);
         //Create custom list adapter
         adapter = new FoodListAdapter(getActivity().getApplicationContext(),R.layout.list_item,listItems);
-        ListView lv = (ListView) view.findViewById(R.id.list_view);
+        ListView lv = (ListView) getActivity().findViewById(R.id.list_view);
         lv.setAdapter(adapter);
         //create API call queue
         queue = Volley.newRequestQueue(getActivity());
@@ -64,10 +80,19 @@ public class SearchFoodFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), AddFood.class);
                 FoodItem f = adapter.getItem(position);
-                intent.putExtra("data",f.getData().toString());
-                startActivity(intent);
+                if(!tablet) {
+                    Intent intent = new Intent(getActivity(), AddFood.class);
+                    intent.putExtra("data", f.getData().toString());
+                    startActivity(intent);
+                } else {
+                    Fragment fragment = new AddFoodFragment();
+                    Bundle b = new Bundle();
+                    b.putString("data",f.getData().toString());
+                    fragment.setArguments(b);
+                    FragmentManager fm = getFragmentManager();
+                    fm.beginTransaction().replace(R.id.extra_fragment,fragment).commit();
+                }
             }
         });
         //call API using data from EditText
@@ -129,6 +154,5 @@ public class SearchFoodFragment extends Fragment {
                 }
             }
         });
-        return view;
     }
 }

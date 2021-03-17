@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.caloriecounter.model.FoodItem;
+import com.example.caloriecounter.model.adapters.FoodItem;
 import com.example.caloriecounter.model.database.Calories;
 import com.example.caloriecounter.model.database.User;
 import com.example.caloriecounter.model.database.Water;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "UserManager.db";
     private static final String TABLE_USER = "user";
     private static final String COLUMN_USER_ID = "user_id";
@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CALORIES_VALUE = "calories_value";
     private static final String COLUMN_CALORIES_DATE = "calories_date";
     private static final String COLUMN_CALORIES_DATA = "food_data";
+    private static final String COLUMN_CALORIES_MEAL = "calories_meal";
 
     private static final String TABLE_WATER = "water";
     private static final String COLUMN_WATER_ID = "water_id";
@@ -47,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String CREATE_TABLE_CALORIES = "CREATE TABLE " + TABLE_CALORIES + "("
             + COLUMN_CALORIES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CALORIES_USER_ID + " INTEGER,"
             + COLUMN_CALORIES_VALUE + " REAL," + COLUMN_CALORIES_DATE + " TEXT,"
-            + COLUMN_CALORIES_DATA + " TEXT,"
+            + COLUMN_CALORIES_DATA + " TEXT," + COLUMN_CALORIES_MEAL + " TEXT, "
             + " FOREIGN KEY (" + COLUMN_CALORIES_USER_ID + ") REFERENCES " + TABLE_USER + "(" + COLUMN_USER_ID + "));";
 
     private String CREATE_TABLE_WATER = "CREATE TABLE " + TABLE_WATER + "("
@@ -61,6 +62,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private String DROP_TABLE_WATER = "DROP TABLE IF EXISTS " + TABLE_WATER + ";";
 
+    private String INSERT_USER = "INSERT INTO " + TABLE_USER + "(" + COLUMN_USER_PASSWORD + ", " +
+            COLUMN_USER_EMAIL + ", " + COLUMN_USER_USERNAME + ") " + "VALUES('eee','eee','eee');";
+
     public DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -70,6 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_CALORIES);
         db.execSQL(CREATE_TABLE_WATER);
+        db.execSQL(INSERT_USER);
     }
 
     @Override
@@ -115,7 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkUser(String username, String password){
-        String columns[] = {
+        String[] columns = {
                 COLUMN_USER_ID
         };
         SQLiteDatabase db = this.getWritableDatabase();
@@ -136,7 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkUser(String email){
-        String columns[] = {
+        String[] columns = {
                 COLUMN_USER_ID
         };
         SQLiteDatabase db = this.getWritableDatabase();
@@ -158,7 +163,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int getUserId(String username, String password){
         int id = -1;
-        String columns[] = {
+        String[] columns = {
                 COLUMN_USER_ID
         };
         SQLiteDatabase db = this.getWritableDatabase();
@@ -182,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public double getTotalFood(int user_id, String date){
         double total = 0.0;
-        String columns[] = {
+        String[] columns = {
                 COLUMN_CALORIES_VALUE
         };
         SQLiteDatabase db = this.getWritableDatabase();
@@ -195,16 +200,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null);
-        Log.d("COUNT",String.valueOf(cursor.getCount()));
         while(cursor.moveToNext()){
             total += cursor.getDouble(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
         }
+        cursor.close();
+        db.close();
         return total;
     }
 
     public FoodItem[] getFoodItems(int user_id, String date){
         ArrayList<FoodItem> list = new ArrayList<>();
-        String columns[] = {
+        String[] columns = {
                 COLUMN_CALORIES_VALUE,
                 COLUMN_CALORIES_DATA
         };
@@ -230,12 +236,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             list.add(new FoodItem(name,obj,val));
         }
+        cursor.close();
+        db.close();
         return list.toArray(new FoodItem[0]);
     }
 
     public int getWater(int user_id, String date){
         int num = 0;
-        String columns[] = {
+        String[] columns = {
                 COLUMN_WATER_VALUE
         };
         SQLiteDatabase db = this.getWritableDatabase();
@@ -268,5 +276,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
 }

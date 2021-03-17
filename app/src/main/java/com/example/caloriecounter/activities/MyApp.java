@@ -4,8 +4,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,6 +21,10 @@ import com.example.caloriecounter.R;
 public class MyApp extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    private String username;
+    private String password;
+    private int user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +46,16 @@ public class MyApp extends AppCompatActivity {
 
         //gets user and updates navslider
         SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-        String username = loggedInUser.getString("username",null);
+        username = loggedInUser.getString("username",null);
+        password = loggedInUser.getString("password",null);
         if(username != null) {
             View header = navigationView.getHeaderView(0);
             TextView navUsername = (TextView) header.findViewById(R.id.username_nav);
             navUsername.setText(username);
+            DatabaseHelper db = new DatabaseHelper(this);
+            user_id = db.getUserId(username,password);
         }
+
     }
 
     @Override
@@ -62,13 +72,12 @@ public class MyApp extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void changeToSearchFragment(View v){
-        Navigation.findNavController(v).navigate(R.id.search_food);
-    }
-
     public void setActionBarTitle(String title){
         getSupportActionBar().setTitle(title);
     }
 
+    public int getUser_id(){
+        return this.user_id;
+    }
 
 }
