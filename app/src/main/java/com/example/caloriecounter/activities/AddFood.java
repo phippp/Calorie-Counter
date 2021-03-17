@@ -49,6 +49,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private String brand;
     private double calories;
     private double serving; //weight
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,11 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if(in.hasExtra("type")){
+            type = in.getStringExtra("type");
+        } else {
+            type = "Other";
         }
 
         try {
@@ -195,6 +201,7 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                         item.setUser_id(user_id);
                         item.setData(data);
                         item.setValue(num);
+                        item.setType(type);
                         item.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                         databaseHelper.addCalories(item);
                         finish();

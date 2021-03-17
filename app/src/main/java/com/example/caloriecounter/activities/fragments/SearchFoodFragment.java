@@ -48,6 +48,8 @@ public class SearchFoodFragment extends Fragment {
     public FoodListAdapter adapter;
     private RequestQueue queue;
 
+    private String type;
+
     private boolean tablet;
     private FrameLayout fl;
 
@@ -59,6 +61,12 @@ public class SearchFoodFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        type = getArguments().getString("type");
+        if(type == null){
+            //this just makes sure that a type is always assigned
+            type = "Other";
+        }
 
         if(getActivity().findViewById(R.id.extra_fragment)!=null){
             tablet = true;
@@ -83,6 +91,7 @@ public class SearchFoodFragment extends Fragment {
                 FoodItem f = adapter.getItem(position);
                 if(!tablet) {
                     Intent intent = new Intent(getActivity(), AddFood.class);
+                    intent.putExtra("type",type);
                     intent.putExtra("data", f.getData().toString());
                     startActivity(intent);
                 } else {
@@ -121,13 +130,7 @@ public class SearchFoodFragment extends Fragment {
                             try {
                                 Log.d("RESPONSE", response.toString());
                                 //Access parsed items
-                                JSONArray arr = response.getJSONArray("parsed");
-//                                for (int i = 0; i < arr.length(); i++) {
-//                                    JSONObject food = arr.getJSONObject(i);
-//                                    adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
-//                                }
-                                //Access hints items
-                                arr = response.getJSONArray("hints");
+                                JSONArray arr = response.getJSONArray("hints");
                                 for (int i = 0; i < arr.length(); i++) {
                                     JSONObject food = arr.getJSONObject(i);
                                     adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food, food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));

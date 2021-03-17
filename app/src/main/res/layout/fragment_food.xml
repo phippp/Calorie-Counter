@@ -358,12 +358,34 @@
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                         app:layout_constraintStart_toEndOf="@+id/imageView5" />
+
+                    <ImageView
+                        android:id="@+id/selector_0"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_more_horiz_black_24" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lunch_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/selector_1"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_more_horiz_black_24" />
 
                     <ImageView
                         android:id="@+id/imageView6"
@@ -415,6 +437,17 @@
                     android:layout_height="match_parent">
 
                     <ImageView
+                        android:id="@+id/selector_2"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_more_horiz_black_24" />
+
+                    <ImageView
                         android:id="@+id/imageView7"
                         android:layout_width="65dp"
                         android:layout_height="65dp"
@@ -462,6 +495,17 @@
                     android:id="@+id/snacks_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/selector_3"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/baseline_more_horiz_black_24" />
 
                     <ImageView
                         android:id="@+id/imageView8"

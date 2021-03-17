@@ -1,21 +1,28 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
@@ -28,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 public class FoodFragment extends Fragment {
 
     private int maxHeight = 100;
@@ -38,6 +47,7 @@ public class FoodFragment extends Fragment {
     private TextView[] days = new TextView[7];
     private ImageView[] bars = new ImageView[7];
     private TextView[] dates = new TextView[7];
+    private ImageView[] selectors = new ImageView[4];
 
     private DatabaseHelper db;
 
@@ -53,6 +63,12 @@ public class FoodFragment extends Fragment {
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyy");
         DateFormat formatter = new SimpleDateFormat("dd-MM");
+
+        for(int i = 0; i < 4; i++){
+            int id = getResources().getIdentifier("selector_"+i,"id",getActivity().getPackageName());
+            selectors[i] = getActivity().findViewById(id);
+            selectors[i].setOnClickListener(this::onClickShowPopup);
+        }
 
         double[] localValues = new double[7];
         double max = 0.0;
@@ -86,6 +102,62 @@ public class FoodFragment extends Fragment {
             bars[i].getLayoutParams().height = dimensionInDp;
         }
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onClickShowPopup(View view){
+        String type = "";
+        switch (view.getId()){
+            case R.id.selector_0:
+                type = "Breakfast";
+                break;
+            case R.id.selector_1:
+                type = "Lunch";
+                break;
+            case R.id.selector_2:
+                type = "Dinner";
+                break;
+            case R.id.selector_3:
+                type = "Other";
+                break;
+        }
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_add_delete, null);
+
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        //popupWindow.showAtLocation(view, Gravity.BOTTOM, x, y);
+        popupWindow.showAsDropDown(view,0,-400);
+
+        popupView.findViewById(R.id.delete_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        String finalType = type;
+        popupView.findViewById(R.id.add_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putString("type", finalType);
+                Navigation.findNavController(view).navigate(R.id.search_food,b);
+                popupWindow.dismiss();
+            }
+        });
+
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
     }
 
 }

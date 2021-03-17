@@ -103,6 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CALORIES_DATA, calories.getData().toString());
         values.put(COLUMN_CALORIES_DATE, calories.getDate());
         values.put(COLUMN_CALORIES_VALUE, calories.getValue());
+        values.put(COLUMN_CALORIES_MEAL, calories.getType());
 
         db.insert(TABLE_CALORIES, null, values);
         db.close();

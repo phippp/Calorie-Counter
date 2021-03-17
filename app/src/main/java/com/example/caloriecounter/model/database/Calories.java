@@ -9,6 +9,15 @@ public class Calories {
     private double value;
     private String date;
     private JSONObject data;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;
