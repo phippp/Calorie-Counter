@@ -58,5 +58,9 @@
         android:name="com.example.caloriecounter.activities.fragments.SettingsFragment"
         android:label="Settings"
         tools:layout="@xml/settings"/>
+    <fragment
+        android:id="@+id/meal_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.MealFragment"
+        android:label="Meal" />
 
 </navigation>

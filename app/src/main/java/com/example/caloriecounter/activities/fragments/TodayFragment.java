@@ -1,6 +1,5 @@
 package com.example.caloriecounter.activities.fragments;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,6 @@ import com.example.caloriecounter.sql.DatabaseHelper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class TodayFragment extends Fragment {
 
@@ -49,7 +46,7 @@ public class TodayFragment extends Fragment {
         } else {
             adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(), R.layout.database_food_item, listItems);
         }
-        ListView lv = (ListView) v.findViewById(R.id.list_for_database);
+        ListView lv = (ListView) v.findViewById(R.id.recycler_list);
         lv.setAdapter(adapter);
         //return view
         return v;

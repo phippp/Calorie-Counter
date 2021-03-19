@@ -7,7 +7,7 @@
     <group android:checkableBehavior="single" >
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/baseline_home_black_24"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_today"
@@ -19,7 +19,21 @@
             android:title="Week" />
         <item
             android:id="@+id/nav_help"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/baseline_info_black_24"
             android:title="Help" />
     </group>
+    <item android:title="" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/food_fragment"
+                    android:icon="@drawable/baseline_restaurant_black_24"
+                    android:title="Food" />
+                <item
+                    android:id="@+id/water_fragment"
+                    android:icon="@drawable/baseline_local_drink_black_24"
+                    android:title="Water" />
+            </group>
+        </menu>
+    </item>
 </menu>

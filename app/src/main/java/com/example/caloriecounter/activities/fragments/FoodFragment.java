@@ -58,6 +58,7 @@ public class FoodFragment extends Fragment {
     private ImageView[] selectors = new ImageView[4];
 
     private TextView[] meals = new TextView[4];
+    private ConstraintLayout[] mealsLayouts = new ConstraintLayout[4];
     private TextView current;
 
     private int day = 0;
@@ -83,10 +84,14 @@ public class FoodFragment extends Fragment {
             selectors[i].setOnClickListener(this::onClickShowPopup);
         }
         //create views for meal specific calorie counting
-        meals[0] = requireActivity().findViewById(R.id.breakfast_counter);
-        meals[1] = requireActivity().findViewById(R.id.lunch_counter);
-        meals[2] = requireActivity().findViewById(R.id.dinner_counter);
-        meals[3] = requireActivity().findViewById(R.id.snacks_counter);
+        for(int i = 0; i< 4; i++){
+            Log.d("LOL",mealNames[i].toLowerCase());
+            int mealId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_counter","id",getActivity().getPackageName());
+            int layoutId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_container","id",getActivity().getPackageName());
+            meals[i] = requireActivity().findViewById(mealId);
+            mealsLayouts[i] = requireActivity().findViewById(layoutId);
+            mealsLayouts[i].setOnClickListener(this::openMeal);
+        }
         current = requireActivity().findViewById(R.id.food_counter_food);
         //create views for graph
         for(int i = 0; i < 7; i++){
@@ -255,6 +260,33 @@ public class FoodFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    public void openMeal(View view){
+        String type = "";
+        switch (view.getId()){
+            case R.id.breakfast_container:
+                type = "Breakfast";
+                break;
+            case R.id.lunch_container:
+                type = "Lunch";
+                break;
+            case R.id.dinner_container:
+                type = "Dinner";
+                break;
+            case R.id.other_container:
+                type = "Other";
+                break;
+        }
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE,-day);
+
+        Bundle b = new Bundle();
+        b.putString("type",type);
+        b.putString("date",df.format(cal.getTime()));
+
+        Navigation.findNavController(view).navigate(R.id.meal_fragment,b);
     }
 
 }

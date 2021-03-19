@@ -506,7 +506,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/snacks_container"
+                    android:id="@+id/other_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -547,7 +547,7 @@
                         app:layout_constraintTop_toTopOf="@+id/imageView8" />
 
                     <TextView
-                        android:id="@+id/snacks_counter"
+                        android:id="@+id/other_counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"

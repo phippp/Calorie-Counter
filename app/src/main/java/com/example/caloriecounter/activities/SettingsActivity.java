@@ -14,11 +14,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean dark_theme = pref.getBoolean("dark_theme",true);
-        if(!dark_theme) {
-            setTheme(R.style.CustomLight);
-        }
+
+        setTheme(R.style.Theme_CalorieCounter);
 
         super.onCreate(savedInstanceState);
 

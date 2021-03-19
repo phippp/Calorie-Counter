@@ -26,7 +26,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_add_black_24" />
+            app:srcCompat="@drawable/baseline_add_black_24"
+            app:tint="?attr/colorOnBackground"/>
 
         <TextView
             android:id="@+id/textView4"
@@ -67,7 +68,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_delete_black_24" />
+            app:srcCompat="@drawable/baseline_delete_black_24"
+            app:tint="?attr/colorOnBackground"/>
 
         <TextView
             android:id="@+id/textView2"

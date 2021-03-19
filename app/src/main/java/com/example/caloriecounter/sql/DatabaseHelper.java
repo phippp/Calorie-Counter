@@ -239,6 +239,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_CALORIES,selection,selectionArgs);
     }
 
+    public FoodItem[] getMealItems(int user_id, String date, String meal){
+        ArrayList<FoodItem> list = new ArrayList<>();
+        String[] columns = {
+                COLUMN_CALORIES_VALUE,
+                COLUMN_CALORIES_DATA
+        };
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_USER_ID + " = ?" + " AND " + COLUMN_CALORIES_DATE + " =?" + " AND " + COLUMN_CALORIES_MEAL + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date, meal};
+        Cursor cursor = db.query(TABLE_CALORIES,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        while(cursor.moveToNext()){
+            JSONObject obj = new JSONObject();
+            String name = "";
+            double val = cursor.getDouble(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
+            try{
+                obj = new JSONObject(cursor.getString(cursor.getColumnIndex(COLUMN_CALORIES_DATA)));
+                name = obj.getJSONObject("food").getString("label");
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+            list.add(new FoodItem(name,obj,val));
+        }
+        cursor.close();
+        db.close();
+        return list.toArray(new FoodItem[0]);
+    }
+
     public FoodItem[] getFoodItems(int user_id, String date){
         ArrayList<FoodItem> list = new ArrayList<>();
         String[] columns = {
