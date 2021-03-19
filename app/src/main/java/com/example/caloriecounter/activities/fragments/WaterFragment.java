@@ -1,5 +1,6 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -164,10 +166,16 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         StringBuilder str = new StringBuilder();
         str.append("(").append(currentWater*250).append("ml)");
         helper.setText(str.toString());
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = requireContext().getTheme();
+        theme.resolveAttribute(R.attr.tint,typedValue, true);
+        @ColorInt int color = typedValue.data;
+
         for(ConstraintLayout c: layouts){
             c.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
-        layouts[day].setBackgroundColor(getResources().getColor(R.color.white_20));
+        layouts[day].setBackgroundColor(color);
         db.close();
         updateGraph();
     }

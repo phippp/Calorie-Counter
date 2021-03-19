@@ -81,7 +81,11 @@ public class SearchFoodFragment extends Fragment {
         searchBox = getActivity().findViewById(R.id.searchBox);
         Button btn = (Button) getActivity().findViewById(R.id.button);
         //Create custom list adapter
-        adapter = new FoodListAdapter(getActivity().getApplicationContext(),R.layout.list_item,listItems);
+        if(((MyApp)requireActivity()).isDark()) {
+            adapter = new FoodListAdapter(getActivity().getApplicationContext(), R.layout.list_item_dark, listItems);
+        } else {
+            adapter = new FoodListAdapter(getActivity().getApplicationContext(), R.layout.list_item, listItems);
+        }
         ListView lv = (ListView) getActivity().findViewById(R.id.list_view);
         lv.setAdapter(adapter);
         //create API call queue

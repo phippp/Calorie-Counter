@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,9 +42,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean dark_theme = pref.getBoolean("dark_theme",true);
+        if(!dark_theme) {
+            setTheme(R.style.CustomLight);
+        }
 
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_login);
         checkPreferences();
         initViews();
         initObjects();

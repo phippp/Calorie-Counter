@@ -35,7 +35,7 @@
         android:background="@drawable/button_template"
         android:enabled="false"
         android:text="@string/register"
-        android:theme="@style/Custom.button"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_password2_layout" />

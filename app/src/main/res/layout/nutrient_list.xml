@@ -3,9 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:theme="@style/Custom"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colour_background_light"
+    android:backgroundTint="@color/black_20">
 
     <TextView
         android:id="@+id/nutrient_name"
@@ -15,6 +16,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        android:textColor="@color/black"
         android:layout_marginRight="16dp"
         android:text="TextView"
         android:textSize="18sp"

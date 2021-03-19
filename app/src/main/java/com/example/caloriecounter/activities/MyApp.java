@@ -22,6 +22,8 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
+
 import com.example.caloriecounter.R;
 
 public class MyApp extends AppCompatActivity {
@@ -32,9 +34,19 @@ public class MyApp extends AppCompatActivity {
     private String password;
     private int user_id;
 
+    private boolean dark = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean dark_theme = pref.getBoolean("dark_theme",true);
+        if(!dark_theme) {
+            dark = false;
+            setTheme(R.style.CustomLight);
+        }
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_app);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,4 +109,17 @@ public class MyApp extends AppCompatActivity {
         return this.user_id;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if the page is loaded again after the settings are updated
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(!(dark == pref.getBoolean("dark_theme",true))){
+            startActivity(new Intent(MyApp.this,MyApp.class));
+        }
+    }
+
+    public boolean isDark(){
+        return this.dark;
+    }
 }

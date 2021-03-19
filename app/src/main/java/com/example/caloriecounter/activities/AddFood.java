@@ -1,6 +1,7 @@
 package com.example.caloriecounter.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,14 +53,27 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
 
     private String type;
     private String date;
+    private boolean dark = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean dark_theme = pref.getBoolean("dark_theme",true);
+        if(!dark_theme) {
+            dark = false;
+            setTheme(R.style.CustomLight);
+        }
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_add_food);
         databaseHelper = new DatabaseHelper(this);
 
-        adapter = new NutrientListAdapter(getApplicationContext(),R.layout.nutrient_list,listItems);
+        if(this.dark) {
+            adapter = new NutrientListAdapter(getApplicationContext(), R.layout.nutrient_list_dark, listItems);
+        }else{
+            adapter = new NutrientListAdapter(getApplicationContext(), R.layout.nutrient_list, listItems);
+        }
         ListView lv = (ListView) findViewById(R.id.nutrient_list);
         lv.setAdapter(adapter);
 

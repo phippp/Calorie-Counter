@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -45,7 +46,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -73,7 +75,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,7 +104,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -129,7 +133,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,7 +162,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -185,7 +191,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -213,7 +220,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/button_template" />
+                    app:srcCompat="@drawable/button_template"
+                    app:tint="?attr/colorPrimary"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
@@ -297,17 +305,11 @@
         android:text="0 kcal"
         android:textSize="48sp" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="?android:attr/listDivider" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -315,7 +317,7 @@
 
             <LinearLayout
                 android:background="@drawable/rounded_box"
-                android:backgroundTint="@color/white_20"
+                android:backgroundTint="?attr/tint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
@@ -336,6 +338,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:tint="?attr/colorOnSurface"
                         app:srcCompat="@drawable/baseline_breakfast_dining_black_24" />
 
                     <TextView
@@ -403,6 +406,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="16dp"
+                        app:tint="?attr/colorOnSurface"
                         android:layout_marginBottom="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -462,6 +466,7 @@
                         android:layout_height="65dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
+                        app:tint="?attr/colorOnSurface"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -522,6 +527,7 @@
                         android:layout_height="65dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
+                        app:tint="?attr/colorOnSurface"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,5 +1,6 @@
 package com.example.caloriecounter.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.model.InputValidation;
@@ -38,9 +40,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean dark_theme = pref.getBoolean("dark_theme",true);
+        if(!dark_theme) {
+            setTheme(R.style.CustomLight);
+        }
 
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_register);
         initViews();
         initObjects();
         initListeners();

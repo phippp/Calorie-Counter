@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colour_background_light"
-    android:backgroundTint="@color/black_20">
+    android:background="@color/colour_background"
+    android:backgroundTint="@color/white_20">
 
     <TextView
         android:id="@+id/food_name"
@@ -16,7 +16,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:text="TextView"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:paddingBottom="4dp"
         android:text="TextView"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/food_name"
         app:layout_constraintTop_toBottomOf="@+id/food_name" />
@@ -41,7 +41,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/button_template"
-        android:backgroundTint="@color/colour_primary_light"
+        android:backgroundTint="@color/colour_primary"
         android:text="Remove"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"

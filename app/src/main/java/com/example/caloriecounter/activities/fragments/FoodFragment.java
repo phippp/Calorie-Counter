@@ -1,5 +1,6 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -35,6 +37,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 
@@ -139,10 +142,14 @@ public class FoodFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
         //set graph backgrounds
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = requireContext().getTheme();
+        theme.resolveAttribute(R.attr.tint,typedValue, true);
+        @ColorInt int color = typedValue.data;
         for(ConstraintLayout c: layouts){
             c.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
-        layouts[day].setBackgroundColor(getResources().getColor(R.color.white_20));
+        layouts[day].setBackgroundColor(color);
         //update calorie counters
         double food = db.getTotalFood(userId,df.format(cal.getTime()));
         current.setText(getString(R.string.calories,(int)food));

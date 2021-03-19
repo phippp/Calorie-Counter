@@ -26,6 +26,11 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="true"
+            android:key="dark_theme"
+            app:title="Toggle dark theme" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
             android:key="notifications"
             app:title="Enable message notifications" />
 

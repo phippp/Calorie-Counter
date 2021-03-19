@@ -44,7 +44,11 @@ public class TodayFragment extends Fragment {
         waterInfo = v.findViewById(R.id.water_today);
         waterMessage = v.findViewById(R.id.water_message);
         //create adapter
-        adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(),R.layout.database_food_item,listItems);
+        if(((MyApp)requireActivity()).isDark()) {
+            adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(), R.layout.database_food_item_dark, listItems);
+        } else {
+            adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(), R.layout.database_food_item, listItems);
+        }
         ListView lv = (ListView) v.findViewById(R.id.list_for_database);
         lv.setAdapter(adapter);
         //return view
