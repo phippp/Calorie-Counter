@@ -32,7 +32,11 @@ public class WeekFragment extends Fragment {
     private DatabaseHelper dbHelper;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_week, container, false);
+        View v = inflater.inflate(R.layout.fragment_week, container, false);
+
+        temp = v.findViewById(R.id.temp);
+
+        return v;
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -40,9 +44,6 @@ public class WeekFragment extends Fragment {
         dbHelper = new DatabaseHelper(requireActivity());
 
         int user = ((MyApp) getActivity()).getUser_id();
-        Log.d("USER",user + "");
-
-        temp = requireActivity().findViewById(R.id.temp);
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyy");
 

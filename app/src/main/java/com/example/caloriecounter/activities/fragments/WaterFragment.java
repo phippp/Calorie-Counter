@@ -167,7 +167,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         for(ConstraintLayout c: layouts){
             c.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
-        layouts[day].setBackgroundColor(getResources().getColor(R.color.lighterBlue));
+        layouts[day].setBackgroundColor(getResources().getColor(R.color.white_20));
         db.close();
         updateGraph();
     }

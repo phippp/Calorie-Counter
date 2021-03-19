@@ -209,6 +209,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return total;
     }
 
+    public double getMealVal(int user_id, String date, String meal){
+        double total = 0.0;
+        String[] columns = {
+                COLUMN_CALORIES_VALUE
+        };
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_USER_ID + " = ?" + " AND " + COLUMN_CALORIES_DATE + " =?" + " AND " + COLUMN_CALORIES_MEAL + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date, meal};
+        Cursor cursor = db.query(TABLE_CALORIES,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        while(cursor.moveToNext()){
+            total += cursor.getDouble(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
+        }
+        cursor.close();
+        db.close();
+        return total;
+    }
+
+    public void dropMeals(int user_id, String date, String meal){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_USER_ID + " = ?" + " AND " + COLUMN_CALORIES_DATE + " =?" + " AND " + COLUMN_CALORIES_MEAL + " =?";
+        String[] selectionArgs = {String.valueOf(user_id), date, meal};
+        db.delete(TABLE_CALORIES,selection,selectionArgs);
+    }
+
     public FoodItem[] getFoodItems(int user_id, String date){
         ArrayList<FoodItem> list = new ArrayList<>();
         String[] columns = {

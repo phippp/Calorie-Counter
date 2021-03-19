@@ -297,6 +297,7 @@
         android:layout_marginLeft="64dp"
         android:background="@drawable/button_template"
         android:text="-"
+        android:theme="@style/Custom.button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -309,6 +310,7 @@
         android:layout_marginRight="64dp"
         android:background="@drawable/button_template"
         android:text="+"
+        android:theme="@style/Custom.button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -49,6 +49,7 @@ public class SearchFoodFragment extends Fragment {
     private RequestQueue queue;
 
     private String type;
+    private String date;
 
     private boolean tablet;
     private FrameLayout fl;
@@ -62,6 +63,7 @@ public class SearchFoodFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        date = getArguments().getString("date");
         type = getArguments().getString("type");
         if(type == null){
             //this just makes sure that a type is always assigned
@@ -92,6 +94,7 @@ public class SearchFoodFragment extends Fragment {
                 if(!tablet) {
                     Intent intent = new Intent(getActivity(), AddFood.class);
                     intent.putExtra("type",type);
+                    intent.putExtra("date",date);
                     intent.putExtra("data", f.getData().toString());
                     startActivity(intent);
                 } else {

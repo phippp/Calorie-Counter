@@ -38,19 +38,21 @@ public class TodayFragment extends Fragment {
     public DatabaseFoodListAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_today, container, false);
+        View v = inflater.inflate(R.layout.fragment_today, container, false);
+        //get views
+        calorieTitle = v.findViewById(R.id.today_calories);
+        waterInfo = v.findViewById(R.id.water_today);
+        waterMessage = v.findViewById(R.id.water_message);
+        //create adapter
+        adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(),R.layout.database_food_item,listItems);
+        ListView lv = (ListView) v.findViewById(R.id.list_for_database);
+        lv.setAdapter(adapter);
+        //return view
+        return v;
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        calorieTitle = getActivity().findViewById(R.id.today_calories);
-        waterInfo = getActivity().findViewById(R.id.water_today);
-        waterMessage = getActivity().findViewById(R.id.water_message);
-
-        adapter = new DatabaseFoodListAdapter(getActivity().getApplicationContext(),R.layout.database_food_item,listItems);
-        ListView lv = (ListView) getActivity().findViewById(R.id.list_for_database);
-        lv.setAdapter(adapter);
 
         updateStats();
     }

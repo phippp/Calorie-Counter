@@ -1,15 +1,21 @@
 package com.example.caloriecounter.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -72,8 +78,19 @@ public class MyApp extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void setActionBarTitle(String title){
-        getSupportActionBar().setTitle(title);
+
+
+    public void logout(MenuItem item){
+        SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
+        loggedInUser.edit().clear().commit();
+        Intent in = new Intent(MyApp.this,LoginActivity.class);
+        startActivity(in);
+        finish();
+    }
+
+    public void settings(MenuItem item){
+        Intent in = new Intent(MyApp.this,SettingsActivity.class);
+        startActivity(in);
     }
 
     public int getUser_id(){

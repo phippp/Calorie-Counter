@@ -53,5 +53,10 @@
         android:name="com.example.caloriecounter.activities.fragments.WaterFragment"
         android:label="Water"
         tools:layout="@layout/fragment_water"/>
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@xml/settings"/>
 
 </navigation>

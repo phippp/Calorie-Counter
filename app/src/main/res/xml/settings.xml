@@ -1,0 +1,39 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <PreferenceCategory android:title="Daily Goals">
+
+        <EditTextPreference
+            android:defaultValue="2000"
+            android:key="calories_goal"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Set daily calorie goal" />
+
+        <EditTextPreference
+            android:defaultValue="8"
+            android:key="water_goal"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Set daily water goal" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Other">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="notifications"
+            app:title="Enable message notifications" />
+
+        <Preference
+            android:key="feedback"
+            android:summary="Report technical issues or suggest new features"
+            app:title="Send feedback" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

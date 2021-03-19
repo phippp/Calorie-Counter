@@ -9,15 +9,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:theme="@style/Theme.CalorieCounter.AppBarOverlay">
+        android:layout_width="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.CalorieCounter.PopupOverlay" />
+            android:background="?attr/colorPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

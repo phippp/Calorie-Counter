@@ -4,7 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
@@ -20,4 +20,34 @@
     <style name="Theme.CalorieCounter.AppBarOverlay"
         parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.CalorieCounter.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Custom.Container">
+
+    </style>
+    <style name="Custom" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colour_primary</item>
+        <item name="colorPrimaryVariant">@color/colour_primary_variant</item>
+        <item name="colorOnPrimary">@color/colour_on_primary</item>
+        <item name="colorSurface">@color/colour_surface</item>
+
+        <item name="colorSecondaryVariant">@color/colour_secondary_variant</item>
+        <item name="colorSecondary">@color/colour_secondary</item>
+        <item name="colorOnSecondary">@color/colour_on_secondary</item>
+        <item name="colorOnSurface">@color/colour_on_surface</item>
+
+        <item name="android:colorBackground">@color/colour_background</item>
+        <item name="colorOnBackground">@color/colour_on_background</item>
+        <item name="colorError">@color/colour_error</item>
+        <item name="colorOnError">@color/colour_on_error</item>
+
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Custom.container">
+
+    </style>
+    <style name="Custom.button">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
 </resources>

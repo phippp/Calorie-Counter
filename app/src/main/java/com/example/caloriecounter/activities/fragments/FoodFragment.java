@@ -21,6 +21,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -35,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import javax.crypto.Cipher;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class FoodFragment extends Fragment {
@@ -44,10 +47,18 @@ public class FoodFragment extends Fragment {
 
     private int userId;
 
+    private ConstraintLayout[] layouts = new ConstraintLayout[7];
+
     private TextView[] days = new TextView[7];
     private ImageView[] bars = new ImageView[7];
     private TextView[] dates = new TextView[7];
     private ImageView[] selectors = new ImageView[4];
+
+    private TextView[] meals = new TextView[4];
+    private TextView current;
+
+    private int day = 0;
+    private final String[] mealNames = {"Breakfast","Lunch","Dinner","Other"};
 
     private DatabaseHelper db;
 
@@ -58,50 +69,117 @@ public class FoodFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        db = new DatabaseHelper(requireActivity());
+        //get user id from activity
         userId = ((MyApp) getActivity()).getUser_id();
-
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        //create date formatter for graph
         DateFormat formatter = new SimpleDateFormat("dd-MM");
-
+        //load the views for creating popupwindows
         for(int i = 0; i < 4; i++){
             int id = getResources().getIdentifier("selector_"+i,"id",getActivity().getPackageName());
             selectors[i] = getActivity().findViewById(id);
             selectors[i].setOnClickListener(this::onClickShowPopup);
         }
-
-        double[] localValues = new double[7];
-        double max = 0.0;
-        double min = 999999.0;
-
+        //create views for meal specific calorie counting
+        meals[0] = requireActivity().findViewById(R.id.breakfast_counter);
+        meals[1] = requireActivity().findViewById(R.id.lunch_counter);
+        meals[2] = requireActivity().findViewById(R.id.dinner_counter);
+        meals[3] = requireActivity().findViewById(R.id.snacks_counter);
+        current = requireActivity().findViewById(R.id.food_counter_food);
+        //create views for graph
         for(int i = 0; i < 7; i++){
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE,-i);
-            double calories = db.getTotalFood(userId,df.format(cal.getTime()));
-            localValues[i] = calories;
-            if(calories > max){
-                max = calories;
-            }else if(calories < min){
-                min = calories;
-            }
             int dayId = getResources().getIdentifier("day_"+i,"id",getActivity().getPackageName());
             int barId = getResources().getIdentifier("bar_"+i,"id",getActivity().getPackageName());
             int dateId = getResources().getIdentifier("date_"+i,"id",getActivity().getPackageName());
+            int layoutId = getResources().getIdentifier("layout_"+i,"id",getActivity().getPackageName());
             days[i] = getActivity().findViewById(dayId);
             bars[i] = getActivity().findViewById(barId);
+            layouts[i] = getActivity().findViewById(layoutId);
+            layouts[i].setOnClickListener(this::onClickLayout);
             dates[i] = getActivity().findViewById(dateId);
             dates[i].setText(formatter.format(cal.getTime()));
+        }
+
+        updatePage();
+    }
+
+    public void onClickLayout(View view){
+        //updates current day
+        switch (view.getId()){
+            case R.id.layout_0:
+                day = 0;
+                break;
+            case R.id.layout_1:
+                day = 1;
+                break;
+            case R.id.layout_2:
+                day = 2;
+                break;
+            case R.id.layout_3:
+                day = 3;
+                break;
+            case R.id.layout_4:
+                day = 4;
+                break;
+            case R.id.layout_5:
+                day = 5;
+                break;
+            case R.id.layout_6:
+                day = 6;
+                break;
+        }
+        updatePage();
+    }
+
+    private void updatePage() {
+        //create database and calendar elements
+        db = new DatabaseHelper(requireActivity());
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE,-day);
+        //set graph backgrounds
+        for(ConstraintLayout c: layouts){
+            c.setBackgroundColor(getResources().getColor(R.color.transparent));
+        }
+        layouts[day].setBackgroundColor(getResources().getColor(R.color.white_20));
+        //update calorie counters
+        double food = db.getTotalFood(userId,df.format(cal.getTime()));
+        current.setText(getString(R.string.calories,(int)food));
+        for(int i = 0; i < 4; i++){
+            double val = db.getMealVal(userId,df.format(cal.getTime()),mealNames[i]);
+            meals[i].setText(getString(R.string.calories,(int)val));
+        }
+        updateGraph();
+        db.close();
+    }
+
+    private void updateGraph() {
+        //create date formatter for db
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        //local values to calculate bar heights
+        double[] localValues = new double[7];
+        double max = 0.0;
+        double min = 999999.0;
+        //set values and calculate max/min
+        for(int i = 0; i < 7; i++) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -i);
+            double calories = db.getTotalFood(userId, df.format(cal.getTime()));
+            localValues[i] = calories;
+            if (calories > max) {
+                max = calories;
+            } else if (calories < min) {
+                min = calories;
+            }
             days[i].setText(String.valueOf((int)calories));
         }
-
-        //map all the values to be in the range 10 to 200
-        int heights[] = new int[7];
+        //update heights for bars
+        int[] heights = new int[7];
         for(int i = 0; i < 7; i++){
             heights[i] = (int) (((maxHeight-minHeight) * ((localValues[i]-min)/(max-min))) + minHeight);
-            int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, heights[i], getResources().getDisplayMetrics());
-            bars[i].getLayoutParams().height = dimensionInDp;
+            bars[i].getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, heights[i], getResources().getDisplayMetrics());
         }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -133,19 +211,31 @@ public class FoodFragment extends Fragment {
         //popupWindow.showAtLocation(view, Gravity.BOTTOM, x, y);
         popupWindow.showAsDropDown(view,0,-400);
 
+        String finalType = type;
         popupView.findViewById(R.id.delete_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                db = new DatabaseHelper(getActivity());
+                DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE,-day);
+                db.dropMeals(userId,df.format(cal.getTime()),finalType);
+                db.close();
+                updatePage();
+                popupWindow.dismiss();
             }
         });
 
-        String finalType = type;
+
         popupView.findViewById(R.id.add_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE,-day);
                 Bundle b = new Bundle();
                 b.putString("type", finalType);
+                b.putString("date",df.format(cal.getTime()));
                 Navigation.findNavController(view).navigate(R.id.search_food,b);
                 popupWindow.dismiss();
             }
