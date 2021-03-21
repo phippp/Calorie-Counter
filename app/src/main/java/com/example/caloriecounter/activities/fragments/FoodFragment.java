@@ -85,7 +85,6 @@ public class FoodFragment extends Fragment {
         }
         //create views for meal specific calorie counting
         for(int i = 0; i< 4; i++){
-            Log.d("LOL",mealNames[i].toLowerCase());
             int mealId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_counter","id",getActivity().getPackageName());
             int layoutId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_container","id",getActivity().getPackageName());
             meals[i] = requireActivity().findViewById(mealId);

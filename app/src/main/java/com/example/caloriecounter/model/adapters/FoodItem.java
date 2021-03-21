@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 public class FoodItem {
 
+    private int id;
     private String name;
     private JSONObject data;
     private double calories;
@@ -13,6 +14,17 @@ public class FoodItem {
         this.name = name;
         this.data = object;
         this.calories = cal;
+    }
+
+    public FoodItem(int id, String name, JSONObject object, double cal){
+        this.id = id;
+        this.name = name;
+        this.data = object;
+        this.calories = cal;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public boolean isShowMenu(){

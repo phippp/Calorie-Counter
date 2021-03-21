@@ -239,9 +239,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_CALORIES,selection,selectionArgs);
     }
 
+    public void dropFood(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        db.delete(TABLE_CALORIES,selection,selectionArgs);
+    }
+
     public FoodItem[] getMealItems(int user_id, String date, String meal){
         ArrayList<FoodItem> list = new ArrayList<>();
         String[] columns = {
+                COLUMN_CALORIES_ID,
                 COLUMN_CALORIES_VALUE,
                 COLUMN_CALORIES_DATA
         };
@@ -258,6 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while(cursor.moveToNext()){
             JSONObject obj = new JSONObject();
             String name = "";
+            int id = cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES_ID));
             double val = cursor.getDouble(cursor.getColumnIndex(COLUMN_CALORIES_VALUE));
             try{
                 obj = new JSONObject(cursor.getString(cursor.getColumnIndex(COLUMN_CALORIES_DATA)));
@@ -265,7 +274,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } catch (JSONException e){
                 e.printStackTrace();
             }
-            list.add(new FoodItem(name,obj,val));
+            list.add(new FoodItem(id,name,obj,val));
         }
         cursor.close();
         db.close();

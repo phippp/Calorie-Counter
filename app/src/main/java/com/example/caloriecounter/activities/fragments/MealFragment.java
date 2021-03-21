@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.example.caloriecounter.sql.DatabaseHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class MealFragment extends Fragment {
 
@@ -44,9 +46,6 @@ public class MealFragment extends Fragment {
     List<FoodItem> list;
     RecyclerAdapter adapter;
 
-//    public ArrayList<FoodItem> listItems= new ArrayList<>();
-//    public DatabaseFoodListAdapter adapter;
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_meal,container,false);
@@ -54,12 +53,18 @@ public class MealFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_list);
         list = new ArrayList<>();
 
-        adapter = new RecyclerAdapter(getContext(), list);
+        user_id = ((MyApp) requireActivity()).getUser_id();
+        if(getArguments() != null) {
+            date = getArguments().getString("date");
+            type = getArguments().getString("type");
+        }
+
+        adapter = new RecyclerAdapter(getContext(), list, date, type, user_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            private final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.colour_primary));
+        ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            private ColorDrawable background;
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -74,6 +79,10 @@ public class MealFragment extends Fragment {
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+                TypedValue value = new TypedValue();
+                requireContext().getTheme().resolveAttribute(R.attr.colorPrimary, value, true);
+                background = new ColorDrawable(value.data);
 
                 View itemView = viewHolder.itemView;
 
@@ -110,13 +119,6 @@ public class MealFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        user_id = ((MyApp) getActivity()).getUser_id();
-
-        if(getArguments() != null) {
-            date = getArguments().getString("date");
-            type = getArguments().getString("type");
-        }
-
         mealTitle = requireActivity().findViewById(R.id.meal_title);
         dateTitle = requireActivity().findViewById(R.id.date_title);
 
@@ -134,4 +136,10 @@ public class MealFragment extends Fragment {
         dbHelper.close();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        list.clear();
+        populateAdapter();
+    }
 }
