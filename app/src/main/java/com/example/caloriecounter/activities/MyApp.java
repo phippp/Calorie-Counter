@@ -1,5 +1,6 @@
 package com.example.caloriecounter.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,14 +10,17 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.example.caloriecounter.activities.fragments.MealFragment;
 import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,6 +29,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class MyApp extends AppCompatActivity {
 
@@ -38,6 +46,7 @@ public class MyApp extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //set the theme before setContentView()
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean dark_theme = pref.getBoolean("dark_theme",true);
         if(!dark_theme) {
@@ -74,6 +83,38 @@ public class MyApp extends AppCompatActivity {
             user_id = db.getUserId(username,password);
         }
 
+        //
+        if(getIntent() != null){
+            navController.navigate(getIntent().getIntExtra("location",R.id.nav_home));
+        }
+
+        if(savedInstanceState != null){
+            navController.navigateUp();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if the page is loaded again after the settings are updated
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(!(dark == pref.getBoolean("dark_theme",true))){
+            int navId = Objects.requireNonNull(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination()).getId();
+            Intent intent = new Intent(MyApp.this,MyApp.class);
+            if(navId == R.id.meal_fragment || navId == R.id.search_food){
+                navId = R.id.food_fragment;
+            }
+            intent.putExtra("location",navId);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
+        int navId = Objects.requireNonNull(Navigation.findNavController(this, R.id.nav_host_fragment).getCurrentDestination()).getId();
+        savedInstanceState.putInt("location", navId);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -84,17 +125,22 @@ public class MyApp extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.onNavDestinationSelected(item, navController)
+                || super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
-
-
     public void logout(MenuItem item){
         SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-        loggedInUser.edit().clear().commit();
+        loggedInUser.edit().clear().apply();
         Intent in = new Intent(MyApp.this,LoginActivity.class);
         startActivity(in);
         finish();
@@ -107,16 +153,6 @@ public class MyApp extends AppCompatActivity {
 
     public int getUser_id(){
         return this.user_id;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //if the page is loaded again after the settings are updated
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if(!(dark == pref.getBoolean("dark_theme",true))){
-            startActivity(new Intent(MyApp.this,MyApp.class));
-        }
     }
 
     public boolean isDark(){

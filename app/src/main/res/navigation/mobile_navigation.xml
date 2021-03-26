@@ -62,5 +62,9 @@
         android:id="@+id/meal_fragment"
         android:name="com.example.caloriecounter.activities.fragments.MealFragment"
         android:label="Meal" />
+    <fragment
+        android:id="@+id/favourites_fragment"
+        android:name="com.example.caloriecounter.activities.fragments.FavouritesFragment"
+        android:label="Favourites" />
 
 </navigation>

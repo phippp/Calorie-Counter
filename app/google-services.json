@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "444218613786",
+    "firebase_url": "https://cob155-coursework-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "cob155-coursework",
+    "storage_bucket": "cob155-coursework.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444218613786:android:c6230144c45307c539b1a3",
+        "android_client_info": {
+          "package_name": "com.example.caloriecounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "444218613786-lq66s2n6khadi1jc1gh6rshkeeaaav23.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaVCBxtcTcJpcRVhEnb85HZgWlPb-WIQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "444218613786-lq66s2n6khadi1jc1gh6rshkeeaaav23.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

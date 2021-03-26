@@ -24,17 +24,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private String date;
     private String meal;
-    private int user_id;
 
     private final int SHOW_MENU = 1;
     private final int HIDE_MENU = 2;
 
-    public RecyclerAdapter(Context context, List<FoodItem> articlesList, String date, String meal, int user_id) {
+    public RecyclerAdapter(Context context, List<FoodItem> articlesList, String date, String meal) {
         this.list = articlesList;
         this.context = context;
         this.meal = meal;
         this.date = date;
-        this.user_id = user_id;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.caloriecounter.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.model.adapters.NutrientItem;
@@ -22,23 +24,36 @@ import com.example.caloriecounter.model.adapters.NutrientListAdapter;
 import com.example.caloriecounter.model.database.Calories;
 import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AddFood extends AppCompatActivity implements View.OnClickListener {
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private JSONObject data;
     private DatabaseHelper databaseHelper;
     public ArrayList<NutrientItem> listItems=new ArrayList<NutrientItem>();
     public NutrientListAdapter adapter;
 
+    private int user_id;
+    private String username;
+
     private TextView title;
+    private ToggleButton favouriteButton;
     private RadioGroup radioGroup;
     private RadioButton gramsOption;
     private RadioButton servingOption;
@@ -64,10 +79,17 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
             setTheme(R.style.CustomLight);
         }
 
+        databaseHelper = new DatabaseHelper(this);
+
+        pref = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
+        username = pref.getString("username",null);
+        String password = pref.getString("password",null);
+        user_id = databaseHelper.getUserId(username,password);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_food);
-        databaseHelper = new DatabaseHelper(this);
+
 
         if(this.dark) {
             adapter = new NutrientListAdapter(getApplicationContext(), R.layout.nutrient_list_dark, listItems);
@@ -132,6 +154,42 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
     private void initViews() throws JSONException {
         title = findViewById(R.id.food_title);
         input = findViewById(R.id.enter_number);
+        favouriteButton = findViewById(R.id.favourite_toggle);
+        DatabaseReference ref = database.getReference("/usr/"+user_id+"/"+username+"/prefs");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    String foodId = data.getJSONObject("food").getString("foodId");
+                    for(DataSnapshot snap: snapshot.getChildren()){
+                        if(snap.getKey().equals(foodId)){
+                            favouriteButton.setChecked(true);
+                        }
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        favouriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = ((ToggleButton)v).isChecked();
+                try {
+                    DatabaseReference ref = database.getReference("/usr/" + user_id + "/" + username + "/prefs/" + data.getJSONObject("food").getString("foodId"));
+                    if (isChecked) { //add to database
+                        ref.setValue(data.toString());
+                    } else { //remove from database
+                        ref.removeValue();
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
         radioGroup = findViewById(R.id.quantity_toggler);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -205,10 +263,6 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.add_food_button:
                 Calories item = new Calories();
-                SharedPreferences pref = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-                String username = pref.getString("username",null);
-                String password = pref.getString("password",null);
-                int user_id = databaseHelper.getUserId(username,password);
                 double num;
                 try {
                     if (radioGroup.getCheckedRadioButtonId() == R.id.option_grams) {
