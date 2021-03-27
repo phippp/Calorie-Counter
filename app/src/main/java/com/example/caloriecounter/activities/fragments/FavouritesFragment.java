@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +39,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FavouritesFragment extends Fragment implements ValueEventListener{
 
+    private ConstraintLayout container;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref;
     DatabaseHelper dbHelper;
@@ -52,6 +55,8 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favourites, container, false);
 
+        container = view.findViewById(R.id.favourite_container);
+
         dbHelper = new DatabaseHelper(getContext());
 
         SharedPreferences pref = getActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
@@ -61,7 +66,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
 
         recyclerView = view.findViewById(R.id.recycler_list);
         list = new ArrayList<>();
-        adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id);
+        adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id, container);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 

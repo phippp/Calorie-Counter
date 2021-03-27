@@ -3,6 +3,7 @@ package com.example.caloriecounter.model.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.AddFood;
 import com.example.caloriecounter.sql.DatabaseHelper;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONException;
 
 import java.util.List;
 
 public class FavouriteFoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<FoodItem> list;
     Context context;
+    View container;
 
     private int user;
     private String username;
@@ -28,11 +35,12 @@ public class FavouriteFoodAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int SHOW_MENU = 1;
     private final int HIDE_MENU = 2;
 
-    public FavouriteFoodAdapter(Context context, List<FoodItem> articlesList, String username, int user){
+    public FavouriteFoodAdapter(Context context, List<FoodItem> articlesList, String username, int user, View container){
         this.list = articlesList;
         this.username = username;
         this.user = user;
         this.context = context;
+        this.container = container;
     }
 
     @Override
@@ -75,7 +83,14 @@ public class FavouriteFoodAdapter extends RecyclerView.Adapter<RecyclerView.View
             ((MenuViewHolder)holder).remove.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    try {
+                        DatabaseReference ref = database.getReference("/usr/"+user+"/"+username+"/prefs/"+entity.getData().getJSONObject("food").getString("foodId"));
+                        ref.removeValue();
+                        Snackbar.make(container,"Item removed from favourites",Snackbar.LENGTH_LONG).setAction("Undo", v1 -> ref.setValue(entity.getData().toString())).show();
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
                 }
             });
         }

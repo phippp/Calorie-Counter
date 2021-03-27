@@ -14,7 +14,7 @@
         android:theme="@style/Custom">
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings" />
         <activity android:name=".activities.AddFood" />
         <activity
             android:name=".activities.MyApp"
