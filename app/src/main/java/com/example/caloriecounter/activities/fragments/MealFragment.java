@@ -72,7 +72,6 @@ public class MealFragment extends Fragment {
 
         landscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-
         recyclerView = view.findViewById(R.id.recycler_list);
         list = new ArrayList<>();
 

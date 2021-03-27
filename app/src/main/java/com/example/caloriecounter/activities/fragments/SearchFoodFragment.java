@@ -2,10 +2,12 @@ package com.example.caloriecounter.activities.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -34,6 +36,11 @@ import com.example.caloriecounter.R;
 import com.example.caloriecounter.model.adapters.FoodListAdapter;
 import com.example.caloriecounter.model.adapters.FoodItem;
 import com.example.caloriecounter.activities.MyApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +48,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class SearchFoodFragment extends Fragment {
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public EditText searchBox;
     public ArrayList<FoodItem> listItems=new ArrayList<FoodItem>();
@@ -88,6 +99,29 @@ public class SearchFoodFragment extends Fragment {
         }
         ListView lv = (ListView) getActivity().findViewById(R.id.list_view);
         lv.setAdapter(adapter);
+
+        SharedPreferences pref = getActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
+        String username = pref.getString("username",null);
+        DatabaseReference ref = database.getReference("/usr/"+((MyApp)getActivity()).getUser_id()+"/"+username+"/prefs");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot snap: snapshot.getChildren()){
+                    try {
+                        JSONObject food = new JSONObject(snap.getValue().toString());
+                        adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food,food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         //create API call queue
         queue = Volley.newRequestQueue(getActivity());
         //set item function -> create activity

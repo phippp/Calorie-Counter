@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import androidx.appcompat.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.example.caloriecounter.activities.fragments.MealFragment;
@@ -16,6 +17,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -158,4 +160,5 @@ public class MyApp extends AppCompatActivity {
     public boolean isDark(){
         return this.dark;
     }
+
 }

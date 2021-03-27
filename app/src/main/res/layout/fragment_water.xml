@@ -48,7 +48,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,7 +77,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -106,7 +106,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -135,7 +135,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -164,7 +164,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -193,7 +193,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -222,7 +222,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/button_template"
-                    app:tint="?attr/colorPrimary"/>/>
+                    app:tint="?attr/colorPrimary" />/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
@@ -294,6 +294,22 @@
                 android:gravity="center"
                 android:text="day" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_template"
+                android:text="Share"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

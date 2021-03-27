@@ -18,25 +18,20 @@ import com.example.caloriecounter.sql.DatabaseHelper;
 
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FavouriteFoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<FoodItem> list;
     Context context;
 
-    private String date;
-    private String meal;
+    private int user;
+    private String username;
 
     private final int SHOW_MENU = 1;
     private final int HIDE_MENU = 2;
 
-    public RecyclerAdapter(Context context, List<FoodItem> articlesList, String date, String meal) {
+    public FavouriteFoodAdapter(Context context, List<FoodItem> articlesList, String username, int user){
         this.list = articlesList;
-        this.context = context;
-        this.meal = meal;
-        this.date = date;
-    }
-
-    public RecyclerAdapter(Context context, List<FoodItem> articlesList){
-        this.list = articlesList;
+        this.username = username;
+        this.user = user;
         this.context = context;
     }
 
@@ -53,7 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         if(viewType == SHOW_MENU) {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.database_food_menu, parent, false);
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.favourite_food_menu, parent, false);
             return new MenuViewHolder(v);
         } else {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.database_food_item, parent, false);
@@ -77,25 +72,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
         }
         if(holder instanceof MenuViewHolder){
-            ((MenuViewHolder)holder).add.setOnClickListener(new View.OnClickListener(){
+            ((MenuViewHolder)holder).remove.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, AddFood.class);
-                    intent.putExtra("date",date);
-                    intent.putExtra("type",meal);
-                    intent.putExtra("data",list.get(position).getData().toString());
-                    context.startActivity(intent);
-                    closeMenu();
-                }
-            });
-            ((MenuViewHolder)holder).delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DatabaseHelper db = new DatabaseHelper(context);
-                    db.dropFood(list.get(position).getId());
-                    closeMenu();
-                    list.remove(position);
-                    db.close();
+
                 }
             });
         }
@@ -120,13 +100,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class MenuViewHolder extends RecyclerView.ViewHolder{
-        ImageView add;
-        ImageView delete;
+        ImageView remove;
 
         public MenuViewHolder(View view){
             super(view);
-            add = view.findViewById(R.id.add_image);
-            delete = view.findViewById(R.id.remove_image);
+            remove = view.findViewById(R.id.remove_image);
         }
     }
 

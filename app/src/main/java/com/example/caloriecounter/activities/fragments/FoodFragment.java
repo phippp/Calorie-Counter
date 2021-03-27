@@ -1,19 +1,28 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,20 +32,27 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.ShareActionProvider;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
+import com.example.caloriecounter.activities.Views.Chart;
 import com.example.caloriecounter.sql.DatabaseHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import javax.crypto.Cipher;
@@ -61,18 +77,44 @@ public class FoodFragment extends Fragment {
     private ConstraintLayout[] mealsLayouts = new ConstraintLayout[4];
     private TextView current;
 
+    private Uri file = null;
+
+    private List<String> datesList= new ArrayList<>();
+    private List<Integer> values= new ArrayList<>();
+    private Button shareBtn;
+
     private int day = 0;
     private final String[] mealNames = {"Breakfast","Lunch","Dinner","Other"};
 
     private DatabaseHelper db;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_food, container, false);
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("LOL","Destroyed");
+        if(file != null){
+            getContext().getContentResolver().delete(file, null, null);
+            file = null;
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        shareBtn = getActivity().findViewById(R.id.share_button);
+        shareBtn.setOnClickListener(this::share);
+
         //get user id from activity
         userId = ((MyApp) getActivity()).getUser_id();
         //create date formatter for graph
@@ -106,9 +148,70 @@ public class FoodFragment extends Fragment {
             layouts[i].setOnClickListener(this::onClickLayout);
             dates[i] = getActivity().findViewById(dateId);
             dates[i].setText(formatter.format(cal.getTime()));
+            datesList.add(formatter.format(cal.getTime()));
         }
-
+        Collections.reverse(datesList);
         updatePage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(file != null){
+            getContext().getContentResolver().delete(file, null, null);
+            file = null;
+        }
+    }
+
+    private void share(View view) {
+        TypedValue value = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.colorPrimary,value,true);
+        Chart chart = new Chart(getContext(),null);
+        chart.setData(values,datesList,value.data);
+        Bitmap bit = convertView(chart);
+        file = getUri(bit);
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        share.putExtra(Intent.EXTRA_STREAM, file);
+        startActivity(Intent.createChooser(share, "Share Image"));
+    }
+
+    private Uri getUri(Bitmap bitmap){
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmap, "image", null);
+        return Uri.parse(path);
+    }
+
+    private Bitmap convertView(View view){
+        Bitmap returnedBitmap = Bitmap.createBitmap(1500, 1000,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        view.draw(canvas);
+        return returnedBitmap;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.extended_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.findItem(R.id.share_action);
+        ShareActionProvider actionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        TypedValue value = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.colorPrimary,value,true);
+        Chart chart = new Chart(getContext(),null);
+        chart.setData(values,datesList,value.data);
+        Bitmap bit = convertView(chart);
+        file = getUri(bit);
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("image/jpeg");
+        shareIntent.putExtra(Intent.EXTRA_STREAM, file);
+
+        actionProvider.setShareIntent(shareIntent);
     }
 
     public void onClickLayout(View view){
@@ -173,6 +276,7 @@ public class FoodFragment extends Fragment {
         double max = 0.0;
         double min = 999999.0;
         //set values and calculate max/min
+        values.clear();
         for(int i = 0; i < 7; i++) {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, -i);
@@ -180,11 +284,14 @@ public class FoodFragment extends Fragment {
             localValues[i] = calories;
             if (calories > max) {
                 max = calories;
-            } else if (calories < min) {
+            }
+            if(calories < min) {
                 min = calories;
             }
+            values.add((int)calories);
             days[i].setText(String.valueOf((int)calories));
         }
+        Collections.reverse(values);
         //update heights for bars
         int[] heights = new int[7];
         for(int i = 0; i < 7; i++){

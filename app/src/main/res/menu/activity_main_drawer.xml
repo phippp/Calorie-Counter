@@ -23,7 +23,7 @@
             android:title="Help" />
         <item
             android:id="@+id/favourites_fragment"
-            android:icon="@drawable/baseline_info_black_24"
+            android:icon="@drawable/favourite_button"
             android:title="Favourites" />
     </group>
     <item android:title="" >

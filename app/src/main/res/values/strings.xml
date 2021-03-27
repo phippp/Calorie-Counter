@@ -36,6 +36,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="nothing"> </string>
+    <string name="favourite">You have %1$d favourites</string>
 
     <string name="database">https://cob155-coursework-default-rtdb.europe-west1.firebasedatabase.app/</string>
 
