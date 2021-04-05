@@ -2,7 +2,9 @@ package com.example.caloriecounter.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +14,8 @@ import androidx.appcompat.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.example.caloriecounter.activities.fragments.MealFragment;
+import com.example.caloriecounter.background.ConnectionReceiver;
+import com.example.caloriecounter.background.NotificationService;
 import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 
@@ -40,11 +44,19 @@ public class MyApp extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    ConnectionReceiver receiver;
+
     private String username;
     private String password;
     private int user_id;
 
     private boolean dark = true;
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(receiver);
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +67,15 @@ public class MyApp extends AppCompatActivity {
             dark = false;
             setTheme(R.style.CustomLight);
         }
+
+        stopService(new Intent(this, NotificationService.class));
+        startService(new Intent(this, NotificationService.class));
+
+        IntentFilter filter = new IntentFilter();
+        receiver = new ConnectionReceiver();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction("android.intent.action.AIRPLANE_MODE_CHANGED");
+        registerReceiver(receiver,filter);
 
         super.onCreate(savedInstanceState);
 

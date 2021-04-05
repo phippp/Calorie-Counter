@@ -12,6 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Custom">
+        <receiver
+            android:name=".background.NotificationCreator"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".background.NotificationService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".background.ConnectionReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />

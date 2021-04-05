@@ -239,6 +239,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_CALORIES,selection,selectionArgs);
     }
 
+    public void dropDate(String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = COLUMN_CALORIES_DATE + " =?";
+        String[] selectionArgs = { date };
+        db.delete(TABLE_CALORIES,selection,selectionArgs);
+
+        selection = COLUMN_WATER_DATE + " =?";
+        db.delete(TABLE_WATER,selection,selectionArgs);
+    }
+
     public void dropFood(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = COLUMN_CALORIES_ID + " = ?";
