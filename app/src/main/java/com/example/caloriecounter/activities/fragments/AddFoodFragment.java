@@ -1,14 +1,13 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,10 +21,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.adapters.NutrientItem;
 import com.example.caloriecounter.model.adapters.NutrientListAdapter;
 import com.example.caloriecounter.model.database.Calories;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -192,11 +192,18 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
                         num = Double.parseDouble(input.getText().toString()) * calories;
                     }
                     if(user_id != -1) {
-                        item.setUser_id(user_id);
-                        item.setData(data);
-                        item.setValue(num);
-                        item.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-                        databaseHelper.addCalories(item);
+
+                        ContentValues values = new ContentValues();
+                        values.put(DataProvider.COLUMN_CALORIES_DATA,data.toString());
+                        values.put(DataProvider.COLUMN_CALORIES_USER_ID,user_id);
+                        values.put(DataProvider.COLUMN_CALORIES_VALUE,num);
+                        values.put(DataProvider.COLUMN_CALORIES_MEAL,"Breakfast");
+                        values.put(DataProvider.COLUMN_CALORIES_DATE, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+
+                        getActivity().getContentResolver().insert(
+                                DataProvider.URI_CALORIES,
+                                values
+                        );
                     }
                 }catch (NumberFormatException e){
                     e.printStackTrace();

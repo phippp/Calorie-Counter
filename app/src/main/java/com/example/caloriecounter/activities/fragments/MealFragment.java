@@ -1,12 +1,11 @@
 package com.example.caloriecounter.activities.fragments;
 
-import android.content.Context;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +24,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.adapters.FoodItem;
 import com.example.caloriecounter.model.adapters.RecyclerAdapter;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MealFragment extends Fragment {
@@ -79,7 +84,6 @@ public class MealFragment extends Fragment {
 
         if(!saved) {
             if (getArguments() != null) {
-                Log.d("LOL", getArguments().toString());
                 if (getArguments().getString("date") != null) {
                     String temp = getArguments().getString("date");
                     if (temp != null) {
@@ -181,8 +185,35 @@ public class MealFragment extends Fragment {
 
     public void populateAdapter(){
         dbHelper = new DatabaseHelper(getActivity());
-        FoodItem[] food = dbHelper.getMealItems(user_id, date, type);
-        list.addAll(Arrays.asList(food));
+
+        Cursor c = getActivity().getContentResolver().query(
+                DataProvider.URI_CALORIES,
+                null,
+                DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_MEAL + " = ?" ,
+                new String[]{String.valueOf(user_id), new SimpleDateFormat("dd-MM-yyyy").format(new Date()), type},
+                null
+        );
+
+        while(c.moveToNext()){
+            JSONObject obj = new JSONObject();
+            String name = "";
+            double val = c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+            try{
+                obj = new JSONObject(c.getString(c.getColumnIndex(DataProvider.COLUMN_CALORIES_DATA)));
+                name = obj.getJSONObject("food").getString("label");
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+            list.add(new FoodItem(name,obj,val));
+        }
+
+        if(list.size() == 0){
+            recyclerView.setVisibility(View.GONE);
+            getActivity().findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.empty_message).setVisibility(View.GONE);
+        }
         dbHelper.close();
     }
 

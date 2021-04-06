@@ -2,16 +2,15 @@ package com.example.caloriecounter.activities.fragments;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +18,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,21 +37,17 @@ import androidx.navigation.Navigation;
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.activities.Views.Chart;
-import com.example.caloriecounter.sql.DatabaseHelper;
-
-import org.w3c.dom.Text;
+import com.example.caloriecounter.data.DataProvider;
+import com.example.caloriecounter.data.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-
-import javax.crypto.Cipher;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -258,10 +250,34 @@ public class FoodFragment extends Fragment {
         }
         layouts[day].setBackgroundColor(color);
         //update calorie counters
-        double food = db.getTotalFood(userId,df.format(cal.getTime()));
+        double food = 0;//db.getTotalFood(userId,df.format(cal.getTime()));
+        double[] mealVals = new double[]{0.0,0.0,0.0,0.0};
+
+        Cursor c = getActivity().getContentResolver().query(
+                DataProvider.URI_CALORIES,
+                null,
+                DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
+                new String[]{String.valueOf(userId), df.format(cal.getTime())},
+                null
+        );
+        while(c.moveToNext()){
+            double val = c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+            food += val;
+            String meal = c.getString(c.getColumnIndex(DataProvider.COLUMN_CALORIES_MEAL));
+            if(meal.equals(mealNames[0])){
+                mealVals[0] += val;
+            }else if(meal.equals(mealNames[1])){
+                mealVals[1] += val;
+            }else if(meal.equals(mealNames[2])){
+                mealVals[2] += val;
+            }else if(meal.equals(mealNames[3])){
+                mealVals[3] += val;
+            }
+        }
+
         current.setText(getString(R.string.calories,(int)food));
         for(int i = 0; i < 4; i++){
-            double val = db.getMealVal(userId,df.format(cal.getTime()),mealNames[i]);
+            double val = mealVals[i];
             meals[i].setText(getString(R.string.calories,(int)val));
         }
         updateGraph();
@@ -280,7 +296,19 @@ public class FoodFragment extends Fragment {
         for(int i = 0; i < 7; i++) {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, -i);
-            double calories = db.getTotalFood(userId, df.format(cal.getTime()));
+            double calories = 0;//db.getTotalFood(userId, df.format(cal.getTime()));
+
+            Cursor c = getActivity().getContentResolver().query(
+                    DataProvider.URI_CALORIES,
+                    null,
+                    DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
+                    new String[]{String.valueOf(userId), df.format(cal.getTime())},
+                    null
+            );
+            while(c.moveToNext()){
+                calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+            }
+
             localValues[i] = calories;
             if (calories > max) {
                 max = calories;
@@ -337,7 +365,14 @@ public class FoodFragment extends Fragment {
                 DateFormat df = new SimpleDateFormat("dd-MM-yyy");
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE,-day);
-                db.dropMeals(userId,df.format(cal.getTime()),finalType);
+
+                getActivity().getContentResolver().delete(
+                        DataProvider.URI_CALORIES,
+                        DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?" + " AND " + DataProvider.COLUMN_CALORIES_MEAL + " = ?",
+                        new String[]{String.valueOf(userId), df.format(cal.getTime()), finalType}
+                        );
+
+
                 db.close();
                 updatePage();
                 popupWindow.dismiss();

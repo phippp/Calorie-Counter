@@ -2,7 +2,6 @@ package com.example.caloriecounter.model.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.AddFood;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DataProvider;
+import com.example.caloriecounter.data.DatabaseHelper;
 
 import java.util.List;
 
@@ -92,7 +92,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View v) {
                     DatabaseHelper db = new DatabaseHelper(context);
-                    db.dropFood(list.get(position).getId());
+//                    db.dropFood(list.get(position).getId());
+
+                    context.getContentResolver().delete(
+                            DataProvider.URI_CALORIES,
+                            DataProvider.COLUMN_CALORIES_ID + " = ?",
+                            new String[]{String.valueOf(list.get(position).getId())}
+                            );
+
+
                     closeMenu();
                     list.remove(position);
                     db.close();

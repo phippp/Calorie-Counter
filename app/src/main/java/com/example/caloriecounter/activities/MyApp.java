@@ -1,32 +1,24 @@
 package com.example.caloriecounter.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import androidx.appcompat.widget.ShareActionProvider;
 import android.widget.TextView;
 
-import com.example.caloriecounter.activities.fragments.MealFragment;
 import com.example.caloriecounter.background.ConnectionReceiver;
 import com.example.caloriecounter.background.NotificationService;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DataProvider;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -68,6 +60,8 @@ public class MyApp extends AppCompatActivity {
             setTheme(R.style.CustomLight);
         }
 
+        //getContentResolver().delete(DataProvider.URI_WATER,null,null);
+
         stopService(new Intent(this, NotificationService.class));
         startService(new Intent(this, NotificationService.class));
 
@@ -102,8 +96,21 @@ public class MyApp extends AppCompatActivity {
             View header = navigationView.getHeaderView(0);
             TextView navUsername = (TextView) header.findViewById(R.id.username_nav);
             navUsername.setText(username);
-            DatabaseHelper db = new DatabaseHelper(this);
-            user_id = db.getUserId(username,password);
+
+            Cursor c = getContentResolver().query(
+                    DataProvider.URI_USER,
+                    null,
+                    DataProvider.COLUMN_USER_USERNAME + " = ?" +" AND " + DataProvider.COLUMN_USER_PASSWORD + " =?",
+                    new String[]{ username, password },
+                    null);
+            if(c.getCount() > 0){
+                c.moveToNext();
+                user_id = c.getInt(c.getColumnIndex(DataProvider.COLUMN_USER_ID));
+            } else {
+                Intent intent = new Intent(MyApp.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
 
         //

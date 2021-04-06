@@ -1,12 +1,12 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,22 +14,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.ListFragment;
 import androidx.navigation.Navigation;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.database.Water;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
 
@@ -81,7 +77,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private void updateCalories() {
         this.dbHelper = new DatabaseHelper(getActivity());
         if(this.userId != -1) {
-            double calories = this.dbHelper.getTotalFood(this.userId, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+
+            double calories = 0;//db.getTotalFood(userId, df.format(cal.getTime()));
+
+            Cursor c = getActivity().getContentResolver().query(
+                    DataProvider.URI_CALORIES,
+                    null,
+                    DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
+                    new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
+                    null
+            );
+            while(c.moveToNext()){
+                calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+            }
+
             this.cc.setText(String.valueOf((int)calories));
         }
         this.dbHelper.close();
@@ -89,7 +98,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     private void updateWater(){
         this.dbHelper = new DatabaseHelper(getActivity());
-        this.water = dbHelper.getWater(this.userId, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+        this.water = 0;
+
+        Cursor c = getActivity().getContentResolver().query(
+                DataProvider.URI_WATER,
+                null,
+                DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
+                null
+        );
+        while(c.moveToNext()){
+            this.water += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
+        }
+
         this.wc.setText(String.valueOf(water));
         this.dbHelper.close();
     }
@@ -99,22 +120,61 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.dbHelper = new DatabaseHelper(getActivity());
         switch (v.getId()){
             case R.id.water_decrease_home:
-                if(water > 0) {
-                    this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water-1);
+                if(this.water > 0) {
+                    //this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water-1);
+
+                    ContentValues values = new ContentValues();
+                    values.put(DataProvider.COLUMN_WATER_VALUE, this.water -1);
+
+                    getActivity().getContentResolver().update(
+                            DataProvider.URI_WATER,
+                            values,
+                            DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                            new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())}
+                    );
+
                     updateWater();
                 } else {
                     Snackbar.make(getView().findViewById(R.id.container),"Error, can't process",Snackbar.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.water_increase_home:
-                if(this.water == 0){
-                    Water w = new Water();
-                    w.setValue(1);
-                    w.setUser_id(this.userId);
-                    w.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-                    this.dbHelper.addWater(w);
+
+                boolean exists = false;
+
+                Cursor c = getActivity().getContentResolver().query(
+                        DataProvider.URI_WATER,
+                        null,
+                        DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                        new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
+                        null
+                );
+                if(c.getCount() > 0){
+                    exists = true;
+                }
+
+                if(!exists){
+
+
+                    ContentValues values = new ContentValues();
+                    values.put(DataProvider.COLUMN_WATER_VALUE,1);
+                    values.put(DataProvider.COLUMN_WATER_USER_ID,userId);
+                    values.put(DataProvider.COLUMN_WATER_DATE, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+
+                    getActivity().getContentResolver().insert(DataProvider.URI_WATER,values);
+
                 } else {
-                    this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water+1);
+//                    this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water+1);
+
+                    ContentValues values = new ContentValues();
+                    values.put(DataProvider.COLUMN_WATER_VALUE, this.water + 1);
+
+                    getActivity().getContentResolver().update(
+                            DataProvider.URI_WATER,
+                            values,
+                            DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                            new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())}
+                    );
                 }
                 updateWater();
                 break;

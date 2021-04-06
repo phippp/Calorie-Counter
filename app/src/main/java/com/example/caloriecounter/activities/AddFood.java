@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +21,11 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.adapters.NutrientItem;
 import com.example.caloriecounter.model.adapters.NutrientListAdapter;
 import com.example.caloriecounter.model.database.Calories;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,11 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class AddFood extends AppCompatActivity implements View.OnClickListener {
 
@@ -84,7 +85,16 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
         pref = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
         username = pref.getString("username",null);
         String password = pref.getString("password",null);
-        user_id = databaseHelper.getUserId(username,password);
+        Cursor c = getContentResolver().query(
+                DataProvider.URI_USER,
+                null,
+                DataProvider.COLUMN_USER_USERNAME + " = ?" +" AND " + DataProvider.COLUMN_USER_PASSWORD + " =?",
+                new String[]{ username, password },
+                null);
+        if(c.getCount() > 0){
+            c.moveToNext();
+            user_id = c.getInt(c.getColumnIndex(DataProvider.COLUMN_USER_ID));
+        }
 
         super.onCreate(savedInstanceState);
 
@@ -271,16 +281,17 @@ public class AddFood extends AppCompatActivity implements View.OnClickListener {
                         num = Double.parseDouble(input.getText().toString()) * calories;
                     }
                     if(user_id != -1) {
-                        item.setUser_id(user_id);
-                        item.setData(data);
-                        item.setValue(num);
-                        item.setType(type);
-                        if(date != null){
-                            item.setDate(date);
-                        }else {
-                            item.setDate(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
+                        ContentValues values = new ContentValues();
+                        values.put(DataProvider.COLUMN_CALORIES_DATA,data.toString());
+                        values.put(DataProvider.COLUMN_CALORIES_USER_ID,user_id);
+                        values.put(DataProvider.COLUMN_CALORIES_VALUE,num);
+                        values.put(DataProvider.COLUMN_CALORIES_MEAL,type);
+                        if(date != null) {
+                            values.put(DataProvider.COLUMN_CALORIES_DATE, date);
+                        } else {
+                            values.put(DataProvider.COLUMN_CALORIES_DATE, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
                         }
-                        databaseHelper.addCalories(item);
+                        getContentResolver().insert(DataProvider.URI_CALORIES,values);
                         finish();
                     }
                 }catch (NumberFormatException e){

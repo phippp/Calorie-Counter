@@ -1,6 +1,8 @@
 package com.example.caloriecounter.activities;
 
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,10 +17,11 @@ import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.InputValidation;
 import com.example.caloriecounter.model.RegisterFormState;
 import com.example.caloriecounter.model.database.User;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -153,13 +156,33 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void insertIntoSQL() {
-        if(!databaseHelper.checkUser(email.getText().toString())){
-            User user = new User();
-            user.setEmail(email.getText().toString());
-            user.setPassword(password.getText().toString());
-            user.setUsername(username.getText().toString());
 
-            databaseHelper.addUser(user);
+        boolean valid = true;
+
+        Cursor c = getContentResolver().query(
+                DataProvider.URI_USER,
+                null,
+                DataProvider.COLUMN_USER_EMAIL + " = ?",
+                new String[]{email.getText().toString()},
+                null
+        );
+        if(c.getCount() > 0){
+            valid = false;
+        }
+
+        if(valid){
+//            User user = new User();
+//            user.setEmail(email.getText().toString());
+//            user.setPassword(password.getText().toString());
+//            user.setUsername(username.getText().toString());
+
+//            databaseHelper.addUser(user);
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.COLUMN_USER_PASSWORD,password.getText().toString());
+            values.put(DataProvider.COLUMN_USER_EMAIL,email.getText().toString());
+            values.put(DataProvider.COLUMN_USER_USERNAME,username.getText().toString());
+
+            getContentResolver().insert(DataProvider.URI_USER,values);
 
             Snackbar.make(findViewById(R.id.container), getString(R.string.account_made), Snackbar.LENGTH_LONG).show();
 

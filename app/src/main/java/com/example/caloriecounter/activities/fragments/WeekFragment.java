@@ -1,52 +1,30 @@
 package com.example.caloriecounter.activities.fragments;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ShareActionProvider;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.activities.Views.Chart;
-import com.example.caloriecounter.sql.DatabaseHelper;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.example.caloriecounter.data.DataProvider;
+import com.example.caloriecounter.data.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,9 +32,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class WeekFragment extends Fragment implements View.OnClickListener{
 
@@ -96,8 +71,34 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE,-i);
             dates.add(formatter.format(cal.getTime()));
-            values.add((int) dbHelper.getTotalFood(user,df.format( cal.getTime() ) ));
-            water.add(dbHelper.getWater(user,df.format( cal.getTime() )));
+
+            double calories = 0.0;
+            int w = 0;
+
+            Cursor c = getActivity().getContentResolver().query(
+                    DataProvider.URI_WATER,
+                    null,
+                    DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                    new String[]{String.valueOf(user), df.format(cal.getTime())},
+                    null
+            );
+            while(c.moveToNext()){
+                w += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
+            }
+
+            c = getActivity().getContentResolver().query(
+                    DataProvider.URI_CALORIES,
+                    null,
+                    DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
+                    new String[]{String.valueOf(user), df.format(cal.getTime())},
+                    null
+            );
+            while(c.moveToNext()){
+                calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+            }
+
+            values.add((int)calories);
+            water.add(w);
         }
 
         Collections.reverse(dates);

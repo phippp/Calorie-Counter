@@ -2,6 +2,7 @@ package com.example.caloriecounter.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -12,20 +13,19 @@ import androidx.preference.PreferenceManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.InputValidation;
 import com.example.caloriecounter.model.LoginFormState;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -153,7 +153,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void verifyFromSQL() {
-        if(databaseHelper.checkUser(username.getText().toString().trim(),password.getText().toString().trim())){
+        boolean valid = false;
+
+        Cursor c = getContentResolver().query(
+                DataProvider.URI_USER,
+                null,
+                DataProvider.COLUMN_USER_PASSWORD + " = ?" + " AND " + DataProvider.COLUMN_USER_USERNAME + " = ?",
+                new String[]{password.getText().toString(),username.getText().toString()},
+                null
+        );
+        if(c.getCount() > 0){
+            valid = true;
+        }
+
+        if(valid){
             //create shared preferences to allow quick login
             SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser", MODE_PRIVATE);
             SharedPreferences.Editor editor = loggedInUser.edit();

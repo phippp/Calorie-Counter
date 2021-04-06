@@ -1,9 +1,6 @@
 package com.example.caloriecounter.model.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.caloriecounter.R;
-import com.example.caloriecounter.activities.AddFood;
-import com.example.caloriecounter.sql.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

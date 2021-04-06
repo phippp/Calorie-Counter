@@ -12,6 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Custom">
+
+        <provider
+            android:name=".data.DataProvider"
+            android:authorities="com.example.caloriecounter.data.DataProvider"
+            android:enabled="true"
+            android:exported="true" />
+
         <receiver
             android:name=".background.NotificationCreator"
             android:enabled="true"

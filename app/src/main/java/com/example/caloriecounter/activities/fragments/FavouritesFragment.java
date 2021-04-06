@@ -1,9 +1,7 @@
 package com.example.caloriecounter.activities.fragments;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.model.adapters.FavouriteFoodAdapter;
 import com.example.caloriecounter.model.adapters.FoodItem;
-import com.example.caloriecounter.model.adapters.RecyclerAdapter;
-import com.example.caloriecounter.sql.DatabaseHelper;
-import com.google.firebase.FirebaseTooManyRequestsException;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -62,7 +58,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         SharedPreferences pref = getActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
         username = pref.getString("username",null);
         String password = pref.getString("password",null);
-        user_id = dbHelper.getUserId(username,password);
+        user_id = ((MyApp)getActivity()).getUser_id();
 
         recyclerView = view.findViewById(R.id.recycler_list);
         list = new ArrayList<>();

@@ -1,7 +1,9 @@
 package com.example.caloriecounter.activities.fragments;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -15,9 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,8 +32,9 @@ import androidx.fragment.app.Fragment;
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.activities.Views.Chart;
+import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.database.Water;
-import com.example.caloriecounter.sql.DatabaseHelper;
+import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class WaterFragment extends Fragment implements View.OnClickListener {
@@ -234,14 +235,41 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         DateFormat df = new SimpleDateFormat("dd-MM-yyy");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
-        if(currentWater == 0){
-            Water w = new Water();
-            w.setUser_id(userId);
-            w.setValue(1);
-            w.setDate(df.format(cal.getTime()));
-            db.addWater(w);
+
+        boolean exists = false;
+
+        Cursor c = getActivity().getContentResolver().query(
+             DataProvider.URI_WATER,
+             null,
+             DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+             new String[]{String.valueOf(userId), df.format(cal.getTime())},
+             null
+        );
+        if(c.getCount() > 0){
+            exists = true;
+        }
+
+        if(!exists){
+
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.COLUMN_WATER_VALUE,1);
+            values.put(DataProvider.COLUMN_WATER_USER_ID,userId);
+            values.put(DataProvider.COLUMN_WATER_DATE, df.format(cal.getTime()));
+
+            getActivity().getContentResolver().insert(DataProvider.URI_WATER,values);
+
         } else {
-            db.updateWater(userId,df.format(cal.getTime()),currentWater + 1);
+            //db.updateWater(userId,df.format(cal.getTime()),currentWater + 1);
+
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.COLUMN_WATER_VALUE, currentWater + 1);
+
+            getActivity().getContentResolver().update(
+                    DataProvider.URI_WATER,
+                    values,
+                    DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                    new String[]{String.valueOf(userId), df.format(cal.getTime())}
+            );
         }
         db.close();
     }
@@ -252,7 +280,19 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
         if(currentWater > 0){
-            db.updateWater(userId,df.format(cal.getTime()),currentWater - 1);
+            //db.updateWater(userId,df.format(cal.getTime()),currentWater - 1);
+
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.COLUMN_WATER_VALUE, currentWater -1);
+
+            getActivity().getContentResolver().update(
+                    DataProvider.URI_WATER,
+                    values,
+                    DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                    new String[]{String.valueOf(userId), df.format(cal.getTime())}
+            );
+
+
         } else {
             Snackbar.make(getView().findViewById(R.id.container),"Error, can't process",Snackbar.LENGTH_SHORT).show();
         }
@@ -264,7 +304,21 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         DateFormat df = new SimpleDateFormat("dd-MM-yyy");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
-        currentWater = db.getWater(userId,df.format(cal.getTime()));
+        currentWater = 0;//db.getWater(userId,df.format(cal.getTime()));
+
+        Cursor c = getActivity().getContentResolver().query(
+                DataProvider.URI_WATER,
+                null,
+                DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                new String[]{String.valueOf(userId), df.format(cal.getTime())},
+                null
+        );
+        while(c.moveToNext()){
+            currentWater += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
+        }
+
+        c.close();
+
         current.setText(String.valueOf(currentWater));
         StringBuilder str = new StringBuilder();
         str.append("(").append(currentWater*250).append("ml)");
@@ -275,8 +329,8 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         theme.resolveAttribute(R.attr.tint,typedValue, true);
         @ColorInt int color = typedValue.data;
 
-        for(ConstraintLayout c: layouts){
-            c.setBackgroundColor(getResources().getColor(R.color.transparent));
+        for(ConstraintLayout con: layouts){
+            con.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
         layouts[day].setBackgroundColor(color);
         db.close();
@@ -299,7 +353,19 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE,-i);
             //get water
-            int waterCount = db.getWater(userId,df.format(cal.getTime()));
+            int waterCount = 0;//db.getWater(userId,df.format(cal.getTime()));
+
+            Cursor c = getActivity().getContentResolver().query(
+                    DataProvider.URI_WATER,
+                    null,
+                    DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                    new String[]{String.valueOf(userId), df.format(cal.getTime())},
+                    null
+            );
+            while(c.moveToNext()){
+                waterCount += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
+            }
+
             localValues[i] = waterCount;
             //max and min calculations
             if(waterCount > max){

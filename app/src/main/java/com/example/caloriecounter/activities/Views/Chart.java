@@ -58,7 +58,6 @@ public class Chart extends View {
             int right = left + 50;
             int bottom = canvas.getHeight() - 100;
             int top = canvas.getHeight() - getBarTop(val) - 50;
-            Log.d("LOL",top+" = TOP");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 canvas.drawRoundRect(left,top,right,bottom,25.0f,25.0f,graph);
             } else {
@@ -107,7 +106,6 @@ public class Chart extends View {
         }
         int diff = (maxHeight - minHeight);
         double fraction = ((double)val-(double)this.min)/((double)this.max-(double)this.min);
-        Log.d("LOL","diff = " + diff + " fraction = " + fraction);
         return (int)(diff * fraction) + minHeight;
     }
 }
