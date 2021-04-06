@@ -16,8 +16,6 @@ import com.example.caloriecounter.R;
 
 public class HelpFragment extends Fragment {
 
-    private WebView myWebView;
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_help, container, false);
     }
@@ -26,7 +24,7 @@ public class HelpFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        myWebView = getActivity().findViewById(R.id.my_site);
+        WebView myWebView = requireActivity().findViewById(R.id.my_site);
         myWebView.loadUrl("https://phillipnavarrete.weebly.com");
 
         WebSettings settings = myWebView.getSettings();

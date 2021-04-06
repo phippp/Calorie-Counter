@@ -18,7 +18,6 @@ import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.model.adapters.FavouriteFoodAdapter;
 import com.example.caloriecounter.model.adapters.FoodItem;
-import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,49 +29,43 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class FavouritesFragment extends Fragment implements ValueEventListener{
 
-    private ConstraintLayout container;
-
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref;
-    DatabaseHelper dbHelper;
-
-    private String username;
-    private int user_id;
 
     RecyclerView recyclerView;
     List<FoodItem> list;
     FavouriteFoodAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_favourites, container, false);
-
-        container = view.findViewById(R.id.favourite_container);
-
-        dbHelper = new DatabaseHelper(getContext());
-
-        SharedPreferences pref = getActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-        username = pref.getString("username",null);
-        String password = pref.getString("password",null);
-        user_id = ((MyApp)getActivity()).getUser_id();
-
-        recyclerView = view.findViewById(R.id.recycler_list);
-        list = new ArrayList<>();
-        adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id, container);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_favourites, container, false);
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ref = database.getReference("/usr/"+user_id+"/"+username+"/prefs");
+        //get container to hold the Snackbar in the recyclerView
+        ConstraintLayout container = requireActivity().findViewById(R.id.favourite_container);
+
+        //get user information
+        SharedPreferences pref = requireActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
+        String username = pref.getString("username", null);
+        int user_id = ((MyApp) requireActivity()).getUser_id();
+
+        //create recyclerView and adapter to hold items
+        recyclerView = requireActivity().findViewById(R.id.recycler_list);
+        list = new ArrayList<>();
+        adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id, container);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+        //setup firebase reference and listener
+        ref = database.getReference("/usr/"+ user_id +"/"+ username +"/prefs");
         ref.addValueEventListener(this);
 
     }
@@ -84,18 +77,26 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ref.addValueEventListener(this);
+    }
+
+    @Override
     public void onDataChange(@NonNull DataSnapshot snapshot) {
         list.clear();
+        //empty list so all items can be re-added
         for(DataSnapshot snap: snapshot.getChildren()){
             try {
-                JSONObject food = new JSONObject(snap.getValue().toString());
+                JSONObject food = new JSONObject(Objects.requireNonNull(snap.getValue()).toString());
                 list.add(new FoodItem(food.getJSONObject("food").getString("label"), food,food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
             }catch (JSONException e){
                 e.printStackTrace();
             }
         }
         adapter.notifyDataSetChanged();
-        TextView tv = getActivity().findViewById(R.id.favourite_count);
+        //update number of favourites
+        TextView tv = requireActivity().findViewById(R.id.favourite_count);
         tv.setText(getString(R.string.favourite,list.size()));
     }
 

@@ -34,10 +34,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView wc;
     private TextView foodOutOf;
 
-    private Button increase;
-    private Button decrease;
-    private Button addFood;
-
     private ConstraintLayout waterLayout;
     private ConstraintLayout foodLayout;
 
@@ -52,15 +48,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.foodOutOf = v.findViewById(R.id.calorie_out_home);
         this.foodLayout = v.findViewById(R.id.calorie_layout_home);
         this.waterLayout = v.findViewById(R.id.water_layout_home);
-        this.addFood = v.findViewById(R.id.calorie_button_home);
-        this.decrease = v.findViewById(R.id.water_decrease_home);
-        this.increase = v.findViewById(R.id.water_increase_home);
+        Button addFood = v.findViewById(R.id.calorie_button_home);
+        Button decrease = v.findViewById(R.id.water_decrease_home);
+        Button increase = v.findViewById(R.id.water_increase_home);
         //set onclicklisteners
         this.foodLayout.setOnClickListener(this);
         this.waterLayout.setOnClickListener(this);
-        this.addFood.setOnClickListener(this);
-        this.decrease.setOnClickListener(this);
-        this.increase.setOnClickListener(this);
+        addFood.setOnClickListener(this);
+        decrease.setOnClickListener(this);
+        increase.setOnClickListener(this);
         //return view
         return v;
     }
