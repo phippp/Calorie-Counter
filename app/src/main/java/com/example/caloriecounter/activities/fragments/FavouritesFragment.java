@@ -50,7 +50,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         super.onActivityCreated(savedInstanceState);
 
         //get container to hold the Snackbar in the recyclerView
-        ConstraintLayout container = requireActivity().findViewById(R.id.favourite_container);
+        ConstraintLayout container = getView().findViewById(R.id.favourite_container);
 
         //get user information
         SharedPreferences pref = requireActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
@@ -58,7 +58,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         int user_id = ((MyApp) requireActivity()).getUser_id();
 
         //create recyclerView and adapter to hold items
-        recyclerView = requireActivity().findViewById(R.id.recycler_list);
+        recyclerView = getView().findViewById(R.id.recycler_list);
         list = new ArrayList<>();
         adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id, container);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,7 +67,6 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         //setup firebase reference and listener
         ref = database.getReference("/usr/"+ user_id +"/"+ username +"/prefs");
         ref.addValueEventListener(this);
-
     }
 
     @Override
@@ -96,7 +95,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         }
         adapter.notifyDataSetChanged();
         //update number of favourites
-        TextView tv = requireActivity().findViewById(R.id.favourite_count);
+        TextView tv = getView().findViewById(R.id.favourite_count);
         tv.setText(getString(R.string.favourite,list.size()));
     }
 

@@ -2,6 +2,7 @@ package com.example.caloriecounter.model.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View v) {
                     DatabaseHelper db = new DatabaseHelper(context);
 //                    db.dropFood(list.get(position).getId());
-
+                    Log.d("LOL",list.get(position).getId()+"");
                     context.getContentResolver().delete(
                             DataProvider.URI_CALORIES,
                             DataProvider.COLUMN_CALORIES_ID + " = ?",

@@ -20,6 +20,7 @@ import com.example.caloriecounter.data.DatabaseHelper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class NotificationCreator extends BroadcastReceiver {
 
@@ -42,8 +43,7 @@ public class NotificationCreator extends BroadcastReceiver {
         String username = loggedInUser.getString("username",null);
         String password = loggedInUser.getString("password",null);
         int user_id = -1;
-        DatabaseHelper db = new DatabaseHelper(context);
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy", Locale.UK);
         if(username != null) {
 
             Cursor c = context.getContentResolver().query(
@@ -56,10 +56,10 @@ public class NotificationCreator extends BroadcastReceiver {
                 c.moveToNext();
                 user_id = c.getInt(c.getColumnIndex(DataProvider.COLUMN_USER_ID));
             }
-            //user_id = db.getUserId(username,password);
+            c.close();
         }
 
-        String message = "";
+        String message;
 
         if(user_id != -1) {
             if (hour < 6) {
@@ -77,6 +77,7 @@ public class NotificationCreator extends BroadcastReceiver {
                 while(c.moveToNext()){
                     cals += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
                 }
+                c.close();
 
                 if (cals == 0) {
                     message = "Make sure to enter your breakfast into the app";
@@ -96,6 +97,7 @@ public class NotificationCreator extends BroadcastReceiver {
                 while(c.moveToNext()){
                     cals += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
                 }
+                c.close();
                 if (cals == 0) {
                     message = "Make sure to enter your lunch into the app";
                 } else {
@@ -114,6 +116,7 @@ public class NotificationCreator extends BroadcastReceiver {
                 while(c.moveToNext()){
                     cals += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
                 }
+                c.close();
                 if (cals == 0) {
                     message = "Make sure to enter your dinner into the app";
                 } else {
@@ -152,11 +155,4 @@ public class NotificationCreator extends BroadcastReceiver {
         alarm.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis() + (1000 * 60 * 60), 1000 * 60 * 60 * 4 ,pending); //4 hours -> 1000 * 60 * 60 * 4
     }
 
-    //to delete the notification if needed
-    public void cancelNotification(Context context){
-        Intent intent = new Intent(context, NotificationCreator.class);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(sender);
-    }
 }

@@ -4,26 +4,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.preference.PreferenceManager;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.InputValidation;
 import com.example.caloriecounter.model.LoginFormState;
-import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -38,16 +33,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private MutableLiveData<LoginFormState> formState;
     private InputValidation inputValidation;
-    private DatabaseHelper databaseHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //get preference and set theme before view is set
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean dark_theme = pref.getBoolean("dark_theme",true);
         if(!dark_theme) {
             setTheme(R.style.CustomLight);
         }
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
@@ -82,23 +76,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initObjects() {
-        databaseHelper = new DatabaseHelper(LoginActivity.this);
         inputValidation = new InputValidation(LoginActivity.this);
-        formState = new MutableLiveData<LoginFormState>();
+        formState = new MutableLiveData<>();
     }
 
     private void initListeners() {
         submitBtn.setOnClickListener(this);
         registerLink.setOnClickListener(this);
 
-        formState.observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if(loginFormState == null) {
-                    return;
-                }
-                submitBtn.setEnabled(loginFormState.isDataValid());
+        formState.observe(this, loginFormState -> {
+            if(loginFormState == null) {
+                return;
             }
+            submitBtn.setEnabled(loginFormState.isDataValid());
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -141,20 +131,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v){
-        switch (v.getId()){
-            case R.id.register_link:
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.login_button:
-                verifyFromSQL();
-                break;
+        if(v.getId() == R.id.register_link){
+            //move to register page
+            Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+            startActivity(intent);
+        } else if(v.getId() == R.id.login_button){
+            //check login
+            verifyFromSQL();
         }
     }
 
     private void verifyFromSQL() {
         boolean valid = false;
-
+        //checks if user exists
         Cursor c = getContentResolver().query(
                 DataProvider.URI_USER,
                 null,
@@ -165,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(c.getCount() > 0){
             valid = true;
         }
-
+        c.close();
         if(valid){
             //create shared preferences to allow quick login
             SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser", MODE_PRIVATE);
@@ -180,10 +169,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
             Snackbar.make(findViewById(R.id.container), getString(R.string.error_invalid_email_password), Snackbar.LENGTH_LONG).show();
         }
-    }
-
-    private void emptyInputEditText(){
-        username.setText(null);
-        password.setText(null);
     }
 }

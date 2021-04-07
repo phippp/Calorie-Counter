@@ -10,18 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.InputValidation;
 import com.example.caloriecounter.model.RegisterFormState;
-import com.example.caloriecounter.model.database.User;
-import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -39,10 +35,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private MutableLiveData<RegisterFormState> formState;
     private InputValidation inputValidation;
-    private DatabaseHelper databaseHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //get theme settings
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean dark_theme = pref.getBoolean("dark_theme",true);
         if(!dark_theme) {
@@ -73,22 +69,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initObjects() {
-        databaseHelper = new DatabaseHelper(RegisterActivity.this);
         inputValidation = new InputValidation(RegisterActivity.this);
-        formState = new MutableLiveData<RegisterFormState>();
+        formState = new MutableLiveData<>();
     }
 
     private void initListeners() {
         submitBtn.setOnClickListener(this);
 
-        formState.observe(this, new Observer<RegisterFormState>() {
-            @Override
-            public void onChanged(@Nullable RegisterFormState registerFormState) {
-                if(registerFormState == null) {
-                    return;
-                }
-                submitBtn.setEnabled(registerFormState.isDataValid());
+        formState.observe(this, registerFormState -> {
+            if(registerFormState == null) {
+                return;
             }
+            submitBtn.setEnabled(registerFormState.isDataValid());
         });
 
         TextWatcher afterTextChangedListener = new TextWatcher() {
@@ -169,14 +161,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(c.getCount() > 0){
             valid = false;
         }
+        c.close();
 
         if(valid){
-//            User user = new User();
-//            user.setEmail(email.getText().toString());
-//            user.setPassword(password.getText().toString());
-//            user.setUsername(username.getText().toString());
 
-//            databaseHelper.addUser(user);
             ContentValues values = new ContentValues();
             values.put(DataProvider.COLUMN_USER_PASSWORD,password.getText().toString());
             values.put(DataProvider.COLUMN_USER_EMAIL,email.getText().toString());

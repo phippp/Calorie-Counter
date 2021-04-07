@@ -22,7 +22,6 @@ import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.activities.Views.Chart;
 import com.example.caloriecounter.data.DataProvider;
-import com.example.caloriecounter.data.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
@@ -30,42 +29,37 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class WeekFragment extends Fragment implements View.OnClickListener{
 
-    private DatabaseHelper dbHelper;
-
     private Uri file = null;
 
-    private Button shareBtn;
-
     private Chart chart;
-    private Chart chart_water;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_week, container, false);
-
-        chart_water = v.findViewById(R.id.chart_water);
-        chart = v.findViewById(R.id.chart);
-        shareBtn = v.findViewById(R.id.share_btn);
-
-        return v;
+        return inflater.inflate(R.layout.fragment_week, container, false);
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        dbHelper = new DatabaseHelper(requireActivity());
 
+        //create views
+        Chart chart_water = getView().findViewById(R.id.chart_water);
+        Button shareBtn = getView().findViewById(R.id.share_btn);
+        chart = getView().findViewById(R.id.chart);
+
+        //create lists for items
         List<String> dates = new ArrayList<>();
         List<Integer> values = new ArrayList<>();
         List<Integer> water = new ArrayList<>();
 
+        //get user id from parent activity
         int user = ((MyApp) getActivity()).getUser_id();
 
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
-        DateFormat formatter = new SimpleDateFormat("dd-MM");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy", Locale.UK);
+        DateFormat formatter = new SimpleDateFormat("dd-MM",Locale.UK);
 
         for(int i = 0; i < 7; i++){
             Calendar cal = Calendar.getInstance();
@@ -85,7 +79,7 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
             while(c.moveToNext()){
                 w += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
             }
-
+            c.close();
             c = getActivity().getContentResolver().query(
                     DataProvider.URI_CALORIES,
                     null,
@@ -96,7 +90,7 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
             while(c.moveToNext()){
                 calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
             }
-
+            c.close();
             values.add((int)calories);
             water.add(w);
         }

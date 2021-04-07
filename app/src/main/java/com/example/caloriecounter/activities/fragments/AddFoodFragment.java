@@ -58,8 +58,8 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
         String str = getArguments() != null ? getArguments().getString("data") : null;
 
         //create adapter for nutrients
-        adapter = new NutrientListAdapter(requireActivity().getApplicationContext(),R.layout.nutrient_list,listItems);
-        ListView listView = requireActivity().findViewById(R.id.nutrient_list);
+        adapter = new NutrientListAdapter(getView().getContext(),R.layout.nutrient_list,listItems);
+        ListView listView = getView().findViewById(R.id.nutrient_list);
         listView.setAdapter(adapter);
 
         //use the data passed to the page
@@ -103,11 +103,11 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
 
     private void initViews() throws JSONException {
         //title
-        title = requireActivity().findViewById(R.id.food_title);
+        title = getView().findViewById(R.id.food_title);
         //input
-        input = requireActivity().findViewById(R.id.enter_number);
+        input = getView().findViewById(R.id.enter_number);
         //radio group buttons
-        radioGroup = requireActivity().findViewById(R.id.quantity_toggler);
+        radioGroup = getView().findViewById(R.id.quantity_toggler);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             int curr;
             if(checkedId == R.id.option_grams){
@@ -129,16 +129,16 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
             }
         });
         //map btn if the food has a company attached
-        Button mapsBtn = requireActivity().findViewById(R.id.maps_button);
+        Button mapsBtn = getView().findViewById(R.id.maps_button);
         mapsBtn.setOnClickListener(this);
         //button to increase value
-        Button addQty = requireActivity().findViewById(R.id.add_qty);
+        Button addQty = getView().findViewById(R.id.add_qty);
         addQty.setOnClickListener(this);
         //button to decrease value
-        Button minusQty = requireActivity().findViewById(R.id.minus_qty);
+        Button minusQty = getView().findViewById(R.id.minus_qty);
         minusQty.setOnClickListener(this);
         //button to submit the food
-        Button addBtn = requireActivity().findViewById(R.id.add_food_button);
+        Button addBtn = getView().findViewById(R.id.add_food_button);
         addBtn.setOnClickListener(this);
         //show the maps button if brand is attached
         if(data.getJSONObject("food").has("brand")){

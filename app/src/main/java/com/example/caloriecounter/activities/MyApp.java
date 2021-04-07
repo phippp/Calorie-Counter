@@ -6,27 +6,25 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 import android.widget.TextView;
 
-import com.example.caloriecounter.background.ConnectionReceiver;
-import com.example.caloriecounter.background.NotificationService;
-import com.example.caloriecounter.data.DataProvider;
-import com.example.caloriecounter.data.DatabaseHelper;
-import com.google.android.material.navigation.NavigationView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
+import com.example.caloriecounter.background.ConnectionReceiver;
+import com.example.caloriecounter.background.NotificationService;
+import com.example.caloriecounter.data.DataProvider;
+import com.google.android.material.navigation.NavigationView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,8 +36,6 @@ public class MyApp extends AppCompatActivity {
 
     ConnectionReceiver receiver;
 
-    private String username;
-    private String password;
     private int user_id;
 
     private boolean dark = true;
@@ -60,11 +56,11 @@ public class MyApp extends AppCompatActivity {
             setTheme(R.style.CustomLight);
         }
 
-        //getContentResolver().delete(DataProvider.URI_WATER,null,null);
-
+        //restarts the service
         stopService(new Intent(this, NotificationService.class));
         startService(new Intent(this, NotificationService.class));
 
+        //sets up receiver for wifi and airplane mode
         IntentFilter filter = new IntentFilter();
         receiver = new ConnectionReceiver();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -73,16 +69,17 @@ public class MyApp extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        //set page to display
         setContentView(R.layout.activity_my_app);
+
+        //set navigation features
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_today, R.id.nav_week, R.id.nav_help, R.id.search_food, R.id.add_food)
-                .setDrawerLayout(drawer)
+                R.id.nav_home, R.id.nav_today, R.id.nav_help, R.id.search_food, R.id.add_food) // this is a list of all pages that can access the draser
+                .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -90,8 +87,8 @@ public class MyApp extends AppCompatActivity {
 
         //gets user and updates navslider
         SharedPreferences loggedInUser = getSharedPreferences("LoggedInUser",MODE_PRIVATE);
-        username = loggedInUser.getString("username",null);
-        password = loggedInUser.getString("password",null);
+        String username = loggedInUser.getString("username", null);
+        String password = loggedInUser.getString("password", null);
         if(username != null) {
             View header = navigationView.getHeaderView(0);
             TextView navUsername = (TextView) header.findViewById(R.id.username_nav);
@@ -101,7 +98,7 @@ public class MyApp extends AppCompatActivity {
                     DataProvider.URI_USER,
                     null,
                     DataProvider.COLUMN_USER_USERNAME + " = ?" +" AND " + DataProvider.COLUMN_USER_PASSWORD + " =?",
-                    new String[]{ username, password },
+                    new String[]{username, password},
                     null);
             if(c.getCount() > 0){
                 c.moveToNext();

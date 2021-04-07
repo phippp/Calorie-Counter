@@ -9,7 +9,6 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,8 +32,6 @@ import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.activities.Views.Chart;
 import com.example.caloriecounter.data.DataProvider;
-import com.example.caloriecounter.model.database.Water;
-import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
@@ -43,18 +40,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class WaterFragment extends Fragment implements View.OnClickListener {
 
-    private final int maxHeight = 100;
-    private final int minHeight = 10;
-
     private int userId;
 
-    private Button increaseBtn;
-    private Button decreaseBtn;
     private TextView current;
     private TextView helper;
 
@@ -70,9 +62,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
 
     private List<String> datesList= new ArrayList<>();
     private List<Integer> values= new ArrayList<>();
-    private Button shareBtn;
 
-    private DatabaseHelper db;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,22 +78,22 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        shareBtn = getActivity().findViewById(R.id.share_button);
+        Button shareBtn = getView().findViewById(R.id.share_button);
         shareBtn.setOnClickListener(this::share);
 
         //create buttons and textview with current water count
-        helper = requireActivity().findViewById(R.id.water_helper);
-        increaseBtn = requireActivity().findViewById(R.id.water_increase_water);
+        helper = getView().findViewById(R.id.water_helper);
+        Button increaseBtn = getView().findViewById(R.id.water_increase_water);
         increaseBtn.setOnClickListener(this);
-        decreaseBtn = requireActivity().findViewById(R.id.water_decrease_water);
+        Button decreaseBtn = getView().findViewById(R.id.water_decrease_water);
         decreaseBtn.setOnClickListener(this);
-        current = requireActivity().findViewById(R.id.water_counter_water);
+        current = getView().findViewById(R.id.water_counter_water);
 
         //get user is from MyApp
         userId = ((MyApp) getActivity()).getUser_id();
 
         //create date formatter
-        DateFormat df = new SimpleDateFormat("dd-MM");
+        DateFormat df = new SimpleDateFormat("dd-MM", Locale.UK);
 
         //load all graph elements
         for(int i = 0; i < 7; i++){
@@ -113,10 +103,10 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
             int barId = getResources().getIdentifier("bar_"+i,"id",getActivity().getPackageName());
             int dateId = getResources().getIdentifier("date_"+i,"id",getActivity().getPackageName());
             int layoutId = getResources().getIdentifier("hover_"+i,"id",getActivity().getPackageName());
-            days[i] = getActivity().findViewById(dayId);
-            bars[i] = getActivity().findViewById(barId);
-            dates[i] = getActivity().findViewById(dateId);
-            layouts[i] = getActivity().findViewById(layoutId);
+            days[i] = getView().findViewById(dayId);
+            bars[i] = getView().findViewById(barId);
+            dates[i] = getView().findViewById(dateId);
+            layouts[i] = getView().findViewById(layoutId);
             layouts[i].setOnClickListener(this);
             dates[i].setText(df.format(cal.getTime()));
             datesList.add(df.format(cal.getTime()));
@@ -129,6 +119,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        //remove file from storage to stop memory problems and renaming problems
         if(file != null){
             getContext().getContentResolver().delete(file, null, null);
             file = null;
@@ -138,7 +129,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("LOL","Destroyed");
+        //remove file from storage to stop memory problems and renaming problems
         if(file != null){
             getContext().getContentResolver().delete(file, null, null);
             file = null;
@@ -197,42 +188,31 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.hover_0:
-                day = 0;
-                break;
-            case R.id.hover_1:
-                day = 1;
-                break;
-            case R.id.hover_2:
-                day = 2;
-                break;
-            case R.id.hover_3:
-                day = 3;
-                break;
-            case R.id.hover_4:
-                day = 4;
-                break;
-            case R.id.hover_5:
-                day = 5;
-                break;
-            case R.id.hover_6:
-                day = 6;
-                break;
-            case R.id.water_increase_water:
-                increaseWater();
-                break;
-            case R.id.water_decrease_water:
-                decreaseWater();
-                break;
+    public void onClick(View view) {
+        if(view.getId() == R.id.hover_0){
+            day = 0;
+        } else if(view.getId() == R.id.hover_1){
+            day = 1;
+        }else if(view.getId() == R.id.hover_2){
+            day = 2;
+        }else if(view.getId() == R.id.hover_3){
+            day = 3;
+        }else if(view.getId() == R.id.hover_4){
+            day = 4;
+        }else if(view.getId() == R.id.hover_5){
+            day = 5;
+        }else if(view.getId() == R.id.hover_6){
+            day = 6;
+        }else if(view.getId() == R.id.water_increase_water){
+            increaseWater();
+        }else if(view.getId() == R.id.water_decrease_water){
+            decreaseWater();
         }
         updatePage();
     }
 
     private void increaseWater() {
-        db = new DatabaseHelper(requireActivity());
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy",Locale.UK);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
 
@@ -248,10 +228,11 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         if(c.getCount() > 0){
             exists = true;
         }
+        c.close();
 
+        ContentValues values = new ContentValues();
         if(!exists){
 
-            ContentValues values = new ContentValues();
             values.put(DataProvider.COLUMN_WATER_VALUE,1);
             values.put(DataProvider.COLUMN_WATER_USER_ID,userId);
             values.put(DataProvider.COLUMN_WATER_DATE, df.format(cal.getTime()));
@@ -259,9 +240,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
             getActivity().getContentResolver().insert(DataProvider.URI_WATER,values);
 
         } else {
-            //db.updateWater(userId,df.format(cal.getTime()),currentWater + 1);
 
-            ContentValues values = new ContentValues();
             values.put(DataProvider.COLUMN_WATER_VALUE, currentWater + 1);
 
             getActivity().getContentResolver().update(
@@ -271,12 +250,10 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
                     new String[]{String.valueOf(userId), df.format(cal.getTime())}
             );
         }
-        db.close();
     }
 
     private void decreaseWater() {
-        db = new DatabaseHelper(requireActivity());
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy",Locale.UK);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
         if(currentWater > 0){
@@ -296,12 +273,10 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         } else {
             Snackbar.make(getView().findViewById(R.id.container),"Error, can't process",Snackbar.LENGTH_SHORT).show();
         }
-        db.close();
     }
 
     private void updatePage() {
-        db = new DatabaseHelper(requireActivity());
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy",Locale.UK);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-day);
         currentWater = 0;//db.getWater(userId,df.format(cal.getTime()));
@@ -320,9 +295,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         c.close();
 
         current.setText(String.valueOf(currentWater));
-        StringBuilder str = new StringBuilder();
-        str.append("(").append(currentWater*250).append("ml)");
-        helper.setText(str.toString());
+        helper.setText(getResources().getString(R.string.current_water,currentWater*250));
 
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = requireContext().getTheme();
@@ -333,14 +306,12 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
             con.setBackgroundColor(getResources().getColor(R.color.transparent));
         }
         layouts[day].setBackgroundColor(color);
-        db.close();
         updateGraph();
     }
 
     private void updateGraph() {
         //create formatter and database connection
-        db = new DatabaseHelper(requireActivity());
-        DateFormat df = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat df = new SimpleDateFormat("dd-MM-yyy",Locale.UK);
 
         //create values to manage height of bar
         double[] localValues = new double[7];
@@ -365,7 +336,7 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
             while(c.moveToNext()){
                 waterCount += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
             }
-
+            c.close();
             localValues[i] = waterCount;
             //max and min calculations
             if(waterCount > max){
@@ -383,7 +354,9 @@ public class WaterFragment extends Fragment implements View.OnClickListener {
         //update the bars height
         int[] heights = new int[7];
         for(int i = 0; i < 7; i++){
-            heights[i] = (int) (((maxHeight-minHeight) * ((localValues[i]-min)/(max-min))) + minHeight);
+            int maxHeight = 100;
+            int minHeight = 10;
+            heights[i] = (int) (((maxHeight - minHeight) * ((localValues[i]-min)/(max-min))) + minHeight);
             bars[i].getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, heights[i], getResources().getDisplayMetrics());
         }
     }

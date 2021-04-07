@@ -95,7 +95,7 @@ public class FoodFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //share button to share (the better way)
-        Button shareBtn = requireActivity().findViewById(R.id.share_button);
+        Button shareBtn = getView().findViewById(R.id.share_button);
         shareBtn.setOnClickListener(this::share);
 
         //get user id from activity
@@ -107,7 +107,7 @@ public class FoodFragment extends Fragment {
         //load the views for creating popup windows
         for(int i = 0; i < 4; i++){
             int id = getResources().getIdentifier("selector_"+i,"id",requireActivity().getPackageName());
-            selectors[i] = requireActivity().findViewById(id);
+            selectors[i] = getView().findViewById(id);
             selectors[i].setOnClickListener(this::onClickShowPopup);
         }
 
@@ -115,12 +115,12 @@ public class FoodFragment extends Fragment {
         for(int i = 0; i< 4; i++){
             int mealId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_counter","id",requireActivity().getPackageName());
             int layoutId = getResources().getIdentifier(mealNames[i].toLowerCase()+"_container","id",requireActivity().getPackageName());
-            meals[i] = requireActivity().findViewById(mealId);
-            mealsLayouts[i] = requireActivity().findViewById(layoutId);
+            meals[i] = getView().findViewById(mealId);
+            mealsLayouts[i] = getView().findViewById(layoutId);
             mealsLayouts[i].setOnClickListener(this::openMeal);
         }
         //view for the selected daily total
-        current = requireActivity().findViewById(R.id.food_counter_food);
+        current = getView().findViewById(R.id.food_counter_food);
 
         //create views for graph
         for(int i = 0; i < 7; i++){
@@ -130,11 +130,11 @@ public class FoodFragment extends Fragment {
             int barId = getResources().getIdentifier("bar_"+i,"id",requireActivity().getPackageName());
             int dateId = getResources().getIdentifier("date_"+i,"id",requireActivity().getPackageName());
             int layoutId = getResources().getIdentifier("layout_"+i,"id",requireActivity().getPackageName());
-            days[i] = requireActivity().findViewById(dayId);
-            bars[i] = requireActivity().findViewById(barId);
-            layouts[i] = requireActivity().findViewById(layoutId);
+            days[i] = getView().findViewById(dayId);
+            bars[i] = getView().findViewById(barId);
+            layouts[i] = getView().findViewById(layoutId);
             layouts[i].setOnClickListener(this::onClickLayout);
-            dates[i] = requireActivity().findViewById(dateId);
+            dates[i] = getView().findViewById(dateId);
             dates[i].setText(formatter.format(cal.getTime()));
             datesList.add(formatter.format(cal.getTime()));
         }

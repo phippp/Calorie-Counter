@@ -20,174 +20,175 @@ import androidx.preference.PreferenceManager;
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
 import com.example.caloriecounter.data.DataProvider;
-import com.example.caloriecounter.model.database.Water;
-import com.example.caloriecounter.data.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
 
-    private DatabaseHelper dbHelper;
     private TextView cc;
     private TextView wc;
     private TextView foodOutOf;
-
-    private ConstraintLayout waterLayout;
-    private ConstraintLayout foodLayout;
 
     private int userId;
     private int water;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
-        //get views
-        this.cc = v.findViewById(R.id.calorie_counter_home);
-        this.wc = v.findViewById(R.id.water_counter_home);
-        this.foodOutOf = v.findViewById(R.id.calorie_out_home);
-        this.foodLayout = v.findViewById(R.id.calorie_layout_home);
-        this.waterLayout = v.findViewById(R.id.water_layout_home);
-        Button addFood = v.findViewById(R.id.calorie_button_home);
-        Button decrease = v.findViewById(R.id.water_decrease_home);
-        Button increase = v.findViewById(R.id.water_increase_home);
-        //set onclicklisteners
-        this.foodLayout.setOnClickListener(this);
-        this.waterLayout.setOnClickListener(this);
-        addFood.setOnClickListener(this);
-        decrease.setOnClickListener(this);
-        increase.setOnClickListener(this);
-        //return view
-        return v;
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.userId = ((MyApp) requireActivity()).getUser_id();
+        //get adjustable text values
+        cc = getView().findViewById(R.id.calorie_counter_home);
+        wc = getView().findViewById(R.id.water_counter_home);
+        foodOutOf = getView().findViewById(R.id.calorie_out_home);
+        //get containers and set onClick
+        ConstraintLayout foodLayout = getView().findViewById(R.id.calorie_layout_home);
+        ConstraintLayout waterLayout = getView().findViewById(R.id.water_layout_home);
+        foodLayout.setOnClickListener(this);
+        waterLayout.setOnClickListener(this);
+        //get buttons and set onClick
+        Button addFood = getView().findViewById(R.id.calorie_button_home);
+        Button decrease = getView().findViewById(R.id.water_decrease_home);
+        Button increase = getView().findViewById(R.id.water_increase_home);
+        addFood.setOnClickListener(this);
+        decrease.setOnClickListener(this);
+        increase.setOnClickListener(this);
+        //get userId from parent activity
+        userId = ((MyApp) requireActivity()).getUser_id();
+        //update values
         updateCalories();
         updateWater();
-    }
-
-    private void updateCalories() {
-        this.dbHelper = new DatabaseHelper(getActivity());
-        if(this.userId != -1) {
-
-            double calories = 0;//db.getTotalFood(userId, df.format(cal.getTime()));
-
-            Cursor c = getActivity().getContentResolver().query(
-                    DataProvider.URI_CALORIES,
-                    null,
-                    DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
-                    new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
-                    null
-            );
-            while(c.moveToNext()){
-                calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
-            }
-
-            this.cc.setText(String.valueOf((int)calories));
-        }
-        this.dbHelper.close();
-    }
-
-    private void updateWater(){
-        this.dbHelper = new DatabaseHelper(getActivity());
-        this.water = 0;
-
-        Cursor c = getActivity().getContentResolver().query(
-                DataProvider.URI_WATER,
-                null,
-                DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
-                new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
-                null
-        );
-        while(c.moveToNext()){
-            this.water += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
-        }
-
-        this.wc.setText(String.valueOf(water));
-        this.dbHelper.close();
-    }
-
-    @Override
-    public void onClick(View v) {
-        this.dbHelper = new DatabaseHelper(getActivity());
-        switch (v.getId()){
-            case R.id.water_decrease_home:
-                if(this.water > 0) {
-                    //this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water-1);
-
-                    ContentValues values = new ContentValues();
-                    values.put(DataProvider.COLUMN_WATER_VALUE, this.water -1);
-
-                    getActivity().getContentResolver().update(
-                            DataProvider.URI_WATER,
-                            values,
-                            DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
-                            new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())}
-                    );
-
-                    updateWater();
-                } else {
-                    Snackbar.make(getView().findViewById(R.id.container),"Error, can't process",Snackbar.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.water_increase_home:
-
-                boolean exists = false;
-
-                Cursor c = getActivity().getContentResolver().query(
-                        DataProvider.URI_WATER,
-                        null,
-                        DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
-                        new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())},
-                        null
-                );
-                if(c.getCount() > 0){
-                    exists = true;
-                }
-
-                if(!exists){
-
-
-                    ContentValues values = new ContentValues();
-                    values.put(DataProvider.COLUMN_WATER_VALUE,1);
-                    values.put(DataProvider.COLUMN_WATER_USER_ID,userId);
-                    values.put(DataProvider.COLUMN_WATER_DATE, new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-
-                    getActivity().getContentResolver().insert(DataProvider.URI_WATER,values);
-
-                } else {
-//                    this.dbHelper.updateWater(this.userId,new SimpleDateFormat("dd-MM-yyyy").format(new Date()),this.water+1);
-
-                    ContentValues values = new ContentValues();
-                    values.put(DataProvider.COLUMN_WATER_VALUE, this.water + 1);
-
-                    getActivity().getContentResolver().update(
-                            DataProvider.URI_WATER,
-                            values,
-                            DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
-                            new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy").format(new Date())}
-                    );
-                }
-                updateWater();
-                break;
-            case R.id.calorie_button_home:
-            case R.id.calorie_layout_home:
-                Navigation.findNavController(v).navigate(R.id.food_fragment);
-                break;
-            case R.id.water_layout_home:
-                Navigation.findNavController(v).navigate(R.id.water_fragment);
-                break;
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        //set value for the calorie target
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireActivity().getApplicationContext());
-        this.foodOutOf.setText(getString(R.string.calories, Integer.parseInt(pref.getString("calories_goal", "2000"))));
+        foodOutOf.setText(getString(R.string.calories, Integer.parseInt(pref.getString("calories_goal", "2000"))));
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //set value for the calorie target
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(requireActivity().getApplicationContext());
+        foodOutOf.setText(getString(R.string.calories, Integer.parseInt(pref.getString("calories_goal", "2000"))));
+    }
+
+    private void updateCalories() {
+        double calories = 0;
+        //get all food items
+        Cursor c = requireActivity().getContentResolver().query(
+                DataProvider.URI_CALORIES,
+                null,
+                DataProvider.COLUMN_CALORIES_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_CALORIES_DATE + " =?",
+                new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy", Locale.UK).format(new Date())},
+                null
+        );
+        //sum of all items values
+        while(c.moveToNext()){
+            calories += c.getDouble(c.getColumnIndex(DataProvider.COLUMN_CALORIES_VALUE));
+        }
+        //free memory
+        c.close();
+        //set text
+        cc.setText(String.valueOf((int)calories));
+    }
+
+    private void updateWater(){
+        water = 0;
+        //gets all water items for that day (should be one)
+        Cursor c = requireActivity().getContentResolver().query(
+                DataProvider.URI_WATER,
+                null,
+                DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy",Locale.UK).format(new Date())},
+                null
+        );
+        //set water count
+        while(c.moveToNext()){
+            water += c.getInt(c.getColumnIndex(DataProvider.COLUMN_WATER_VALUE));
+        }
+        //free memory
+        c.close();
+        //set text
+        wc.setText(String.valueOf(water));
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.water_decrease_home){
+            //if decrease button clicked
+            if(water > 0) {
+                //if can have water subtracted
+                ContentValues values = new ContentValues();
+                values.put(DataProvider.COLUMN_WATER_VALUE, this.water -1);
+                //update database via content provider
+                requireActivity().getContentResolver().update(
+                        DataProvider.URI_WATER,
+                        values,
+                        DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                        new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy",Locale.UK).format(new Date())}
+                );
+                //update screen
+                updateWater();
+            } else {
+                //if the value is 0 send a error message
+                Snackbar.make(getView().findViewById(R.id.container),"Error, can't process",Snackbar.LENGTH_SHORT).show();
+            }
+        }else if(v.getId() == R.id.water_increase_home){
+            //if increase button clicked
+            boolean exists = false;
+            //check if there is an entry in the table (can be an entry with value 0)
+            Cursor c = requireActivity().getContentResolver().query(
+                    DataProvider.URI_WATER,
+                    null,
+                    DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                    new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy",Locale.UK).format(new Date())},
+                    null
+            );
+            if(c.getCount() > 0){
+                exists = true;
+            }
+            //free memory
+            c.close();
+
+            ContentValues values = new ContentValues();
+            if(!exists){
+                //no value exists
+                values.put(DataProvider.COLUMN_WATER_VALUE,1);
+                values.put(DataProvider.COLUMN_WATER_USER_ID,userId);
+                values.put(DataProvider.COLUMN_WATER_DATE, new SimpleDateFormat("dd-MM-yyyy",Locale.UK).format(new Date()));
+                //insert new data into database
+                getActivity().getContentResolver().insert(DataProvider.URI_WATER,values);
+            } else {
+                //value exists
+                values.put(DataProvider.COLUMN_WATER_VALUE, water + 1);
+                //update database with content provider
+                getActivity().getContentResolver().update(
+                        DataProvider.URI_WATER,
+                        values,
+                        DataProvider.COLUMN_WATER_USER_ID + " = ?" + " AND " + DataProvider.COLUMN_WATER_DATE + " =?",
+                        new String[]{String.valueOf(userId), new SimpleDateFormat("dd-MM-yyyy",Locale.UK).format(new Date())}
+                );
+            }
+            //update screen
+            updateWater();
+        }else if(v.getId() == R.id.calorie_button_home || v.getId() == R.id.calorie_layout_home){
+            //move to the food fragment
+            Navigation.findNavController(v).navigate(R.id.food_fragment);
+        }else if(v.getId() == R.id.water_layout_home){
+            //move to the water fragment
+            Navigation.findNavController(v).navigate(R.id.water_fragment);
+        }
+    }
+
+
 }

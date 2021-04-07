@@ -24,7 +24,7 @@ public class HelpFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        WebView myWebView = requireActivity().findViewById(R.id.my_site);
+        WebView myWebView = getView().findViewById(R.id.my_site);
         myWebView.loadUrl("https://phillipnavarrete.weebly.com");
 
         WebSettings settings = myWebView.getSettings();

@@ -13,8 +13,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.HashMap;
-
 public class DataProvider extends ContentProvider {
 
     static final String PROVIDER_NAME = "com.example.caloriecounter.data.DataProvider";
@@ -38,8 +36,6 @@ public class DataProvider extends ContentProvider {
     public static final String COLUMN_WATER_USER_ID = "user_id";
     public static final String COLUMN_WATER_VALUE = "water_value";
     public static final String COLUMN_WATER_DATE = "water_date";
-
-    private static HashMap<String, String> USER_MAP;
 
     static final int USERS = 1;
     static final int USER_ID = 2;
@@ -66,10 +62,7 @@ public class DataProvider extends ContentProvider {
         Context context = getContext();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         db = databaseHelper.getWritableDatabase();
-        if (db != null) {
-            return true;
-        }
-        return false;
+        return db != null;
     }
 
     @Nullable
@@ -82,7 +75,7 @@ public class DataProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         Uri _uri = null;
-        long id = -1;
+        long id;
         switch (uriMatcher.match(uri)){
             case USERS:
                 id = db.insert("user", "", values);
