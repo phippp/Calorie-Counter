@@ -1,0 +1,253 @@
+*{
+    margin : 0px;
+    padding : 0px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* SECTION 1: NAVIGATION */
+
+.nav-container{
+    padding: 0 4vw; 
+    height: 55px;
+    background:  white;
+    justify-content: space-between;
+    align-items: center;
+    color: #1d1d1d;
+    border-bottom: 1px solid #aaa;
+}
+
+nav{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 1.6rem;
+    text-align:center;
+}
+
+.nav-link-active{
+    font-weight: 500;
+}
+
+nav a {
+    color: #1d1d1d;
+    padding: 0.5em;
+    margin: 0px 5px;
+    text-decoration: none;
+    font-size: 1.125rem;
+}
+
+nav a:hover{
+    color: #5d5d5d;
+}
+
+#primary-nav-links{
+    display: flex;
+    align-items: center;
+}
+
+@media screen and (max-width:768px){
+    .nav-container{
+        height: 110px;
+        padding: 0;
+    }
+    
+    nav{
+        flex-direction: column;
+	    justify-content: space-between;
+    }
+
+    #primary-nav-links {
+        flex-direction: column;
+        width: 100%;
+        padding-left: 0rem !important;
+        justify-content: flex-end;
+        align-items: flex-end;
+    }
+
+    nav a{
+        width: 100%;
+        text-align: right;
+        border-bottom: 2px solid #aaa;
+        background-color: #fafafa;
+        padding: 0.8rem;
+        margin: 0;
+    }
+}
+
+@media screen and (min-width:769px){
+
+    #primary-nav-links{
+        display: flex !important;
+    }
+}
+
+/* SECTION 2: SLIDESHOW */
+
+.slideshow-container {
+    position: relative;
+    margin: auto;
+    background-color: #919191;
+}
+
+.image-swipeable{
+    touch-action: manipulation;
+}
+
+.slide {
+    display: none;
+}
+
+.image-container img{
+    max-height:70vh;
+    object-fit: contain;
+}
+
+.previous-slide, .next-slide {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+.next-slide {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.previous-slide:hover, .next-slide:hover {
+    background-color: rgba(255,255,255,0.8);
+}
+
+.number-text {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+    font-size: 1.25rem;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 15px;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+  
+.dot:hover {
+    background-color: #717171;
+}
+  
+.active-img{
+    background-color: lightskyblue;
+    width:45px;
+}
+
+.fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+  
+@-webkit-keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+  
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+@media screen and (max-width:399px){
+    .previous-slide, .next-slide{
+        color: white !important;
+    }
+
+    .number-text{
+        font-size: 0.75rem;
+    }
+}
+
+@media screen and (max-width:769px) and (min-width:400px){
+    .number-text{
+        font-size: 1.125rem;
+    }
+}
+
+/* SECTION 3: DESCRIPTIONS */
+
+.number-container{
+    display: inline-block;
+    width: 30px;
+    line-height: 0px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 1rem;
+    border: 2px solid #666;
+}
+
+.number-container span{
+    font-size: 1.5rem;
+    display:inline-block;
+    padding-top:50%;
+    padding-bottom:50%;
+}
+
+table{
+    margin-left:auto;
+    margin-right: auto;
+    max-width: 1000px;
+}
+
+table .number{
+    text-align: right;
+    padding-right:0;
+}
+
+table ul{
+    padding-left: 5vh;
+}
+
+table a{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+td{
+    border-bottom: 1px dashed black;
+    padding: 1vh 5vh 1vh 5vh;
+}
+
+
+@media screen and (max-width:769px){
+    td{
+        padding-left:5vw;
+        padding-right: 5vw;
+    }
+
+    .number-container{
+        width: 20px;
+    }
+
+    .number-container span{
+        font-size: 1rem;
+    }
+}
+
+/* SECTION 4: FAQ's */

@@ -1,0 +1,273 @@
+<html lang="en">
+    <head>
+       	<meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="jquery.mobile-1.4.4.min.js"></script>
+		<link rel="stylesheet" href="stylesheet.css">
+        <title>Help Page</title>
+    </head>
+	<body>
+
+		<div class="nav-container">
+    		<nav>
+        		<div id="primary-nav-links">
+            		<a class="nav-link-active" id="index"> Tutorial</a>
+            		<a id="faq"> FAQ</a>
+        		</div>
+    		</nav>
+		</div>
+		
+		<div class = "gallery-container">
+            <!-- Image and buttons -->
+            <div class = "image-container">
+                <div class="slideshow-container">
+                    <!-- Home -->
+                    <div class="slide fade">
+                        <div class="number-text">1 / 7</div>
+                        <img src="images/home.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+                    <!-- Food -->
+                    <div class="slide fade">
+                        <div class="number-text">2 / 7</div>
+                        <img src="images/food.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+                    <!-- Water -->
+                    <div class="slide fade">
+                        <div class="number-text">3 / 7</div>
+                        <img src="images/water.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+					<!-- Meal -->
+                    <div class="slide fade">
+                        <div class="number-text">4 / 7</div>
+                        <img src="images/meal.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+					<!-- Search -->
+                    <div class="slide fade">
+                        <div class="number-text">5 / 7</div>
+                        <img src="images/search.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+					<!-- Add -->
+                    <div class="slide fade">
+                        <div class="number-text">6 / 7</div>
+                        <img src="images/add.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+					<!-- Favourites -->
+                    <div class="slide fade">
+                        <div class="number-text">7 / 7</div>
+                        <img src="images/favourites.PNG" style="width:100%" class="image-swipeable">
+                    </div>
+
+                    <a class="previous-slide" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next-slide" onclick="plusSlides(1)">&#10095;</a>
+                </div>
+                <br>
+                <div class ="dot-bar" style="text-align:center">
+                    <span class="dot" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+					<span class="dot" onclick="currentSlide(4)"></span>
+					<span class="dot" onclick="currentSlide(5)"></span>
+					<span class="dot" onclick="currentSlide(6)"></span>
+					<span class="dot" onclick="currentSlide(7)"></span>
+                </div>
+            </div>
+
+            <!-- Descriptions -->
+            <div class = "image-description-container">
+                <!-- Home -->
+                <div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>Clicking anywhere inside this this will move you onto food page (<a onclick="currentSlide(2)">see image 2</a>).
+                                    <br>It will display your current daily calorie count out of your target calories.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>These two buttons will update your current daily water consumption, the left will decrease it by 1 value and the right will increase it by 1.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>3</span></div></td>
+                                <td>Clicking anywhere inside this this will move you onto water page (<a onclick="currentSlide(3)">see image 3</a>).
+                                    <br>It will display your current daily water consumption (each glass is assumed to be 250ml)
+                                </td>
+                            </tr>
+                        </table>
+            
+                    </div>
+                    
+                </div>
+                <!-- Food -->
+                <div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>This graph shows the last seven days of calorie information, you can click on any one of the days to view that specific day.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This button allows you to share your graph externally as a JPG to many apps that you can choose from.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>3</span></div></td>
+                                <td>This is the total calories you consumed on that day.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>4</span></div></td>
+                                <td>All foods can be broken down into one of 4 meals,
+                                    <ul>
+                                        <li>Breakfast</li>
+                                        <li>Lunch</li>
+                                        <li>Dinner</li>
+                                        <li>Other</li>
+                                    </ul>
+                                    This shows a break down of calories for each of these meals. 
+                                    By clicking on any one of these the user will move to the meal page and be able to see all items added to that meal. 
+                                    (<a onclick="currentSlide(4)">see image 4</a>)
+                                    <br>
+                                    By clicking on the meatball menu (…) the user can also choose to add food to that meal (<a onclick="currentSlide(5)">see image 5</a>) or completely empty that meal.
+                                </td>
+                            </tr>
+            
+                        </table>
+            
+                    </div>
+                    
+                </div>
+                <!-- Water -->
+                <div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>This graph shows the last seven days of water information, you can click on any one of the days to view that specific day.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This button allows you to share your graph externally as a JPG to many apps that you can choose from.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>3</span></div></td>
+                                <td>This shows you how many glasses of water you consumed that day, you can then use the buttons to either side to increase/ decrease the value.</td>
+                            </tr>          
+                        </table>
+            
+                    </div>
+                    
+                </div>
+				<!-- Meal -->
+				<div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>This informs you of the date and meal that you are currently viewing.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This is a list of all the food items that have been added to that meal, you can either long press or slide left to open up a seperate menu to delete or add the item again.</td>
+                            </tr>
+                        </table>
+            
+                    </div>
+                    
+                </div>
+				<!-- Search -->
+				<div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>This allows the user to type any foods that they want to search, compound foods (tea with milk) may need to be searched as individual items.
+                                    <br>
+                                    By pressing the button it updates the list below with information from the Edamam API.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This is the results tab, when the page is first shown it will display any favourited items.
+                                    <br>If the user doesn't have Wi-Fi these will be the only things that the user will be able to add as the API requires internet access.
+                                    <br>By simply clicking on any of the list items the user can see more information about the food and add it to their account. (<a onclick="currentSlide(6)">see image 6</a>)
+                                </td>
+                            </tr>          
+                        </table>
+            
+                    </div>
+                    
+                </div>
+				<!-- Add -->
+				<div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>At the top we have the name of the food, there is also a toggleable to add an item as a favourite.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This shows a list of most of the main nutrient types and their values for this particualr food (per serving)</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>3</span></div></td>
+                                <td>The toggleable switch changes the value from servings to grams
+                                    <br>You can then either manually enter an integer value using keyboard or you can use the buttons to increase/ decrease the value.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>4</span></div></td>
+                                <td>Some foods are considered branded, these items are usually for fast food restaurants, in which case a button will show that will open Google Maps searching for the nearest restaurant that sells it.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>5</span></div></td>
+                                <td>This button will return you to the search page and add the item to your meal.</td>
+                            </tr>
+            
+                        </table>
+            
+                    </div>
+                    
+                </div>
+				<!-- Favourites -->
+				<div class = "sub-image-container content-container">
+
+                    <div class="information">
+
+                        <table>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>1</span></div></td>
+                                <td>This notifies you of how many favourites you have and identifies the page.</td>
+                            </tr>
+                            <tr>
+                                <td class="number"><div class="number-container"><span>2</span></div></td>
+                                <td>This has a list of your favourited items, by sliding the list item right or by long pressing it the user can access a menu to remove it from their favourites.</td>
+                            </tr>           
+                        </table>
+            
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript" src="navigation.js"></script>
+		<script type="text/javascript" src="gallery.js"></script>
+
+	</body>
+</html>
