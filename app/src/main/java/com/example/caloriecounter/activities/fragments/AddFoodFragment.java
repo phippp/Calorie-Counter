@@ -1,7 +1,9 @@
 package com.example.caloriecounter.activities.fragments;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,10 +14,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import com.example.caloriecounter.R;
 import com.example.caloriecounter.activities.MyApp;
@@ -23,6 +28,11 @@ import com.example.caloriecounter.data.DataProvider;
 import com.example.caloriecounter.model.adapters.NutrientItem;
 import com.example.caloriecounter.model.adapters.NutrientListAdapter;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +45,19 @@ import java.util.Locale;
 
 public class AddFoodFragment extends Fragment implements View.OnClickListener{
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+    private int user_id;
+    private String username;
+
     private JSONObject data;
+    private String date, type;
+
     public ArrayList<NutrientItem> listItems = new ArrayList<>();
     public NutrientListAdapter adapter;
 
     private TextView title;
+    private ToggleButton favouriteButton;
     private RadioGroup radioGroup;
     private EditText input;
     private String brand;
@@ -56,9 +74,20 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
 
         //get data with null check
         String str = getArguments() != null ? getArguments().getString("data") : null;
+        date = getArguments().getString("date");
+        type = getArguments().getString("type");
+
+        //get user info
+        user_id = ((MyApp)requireActivity()).getUser_id();
+        SharedPreferences pref = requireActivity().getSharedPreferences("LoggedInUser", Context.MODE_PRIVATE);
+        username = pref.getString("username",null);
 
         //create adapter for nutrients
-        adapter = new NutrientListAdapter(getView().getContext(),R.layout.nutrient_list,listItems);
+        if(((MyApp)requireActivity()).isDark()){
+            adapter = new NutrientListAdapter(getView().getContext(),R.layout.nutrient_list_dark,listItems);
+        } else {
+            adapter = new NutrientListAdapter(getView().getContext(),R.layout.nutrient_list,listItems);
+        }
         ListView listView = getView().findViewById(R.id.nutrient_list);
         listView.setAdapter(adapter);
 
@@ -128,6 +157,40 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
+        //favourite button
+        favouriteButton = getView().findViewById(R.id.favourite_toggle);
+        DatabaseReference ref = database.getReference("/usr/"+user_id+"/"+username+"/prefs");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    String foodId = data.getJSONObject("food").getString("foodId");
+                    for(DataSnapshot snap: snapshot.getChildren()){
+                        if(snap.getKey().equals(foodId)){
+                            favouriteButton.setChecked(true);
+                        }
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        favouriteButton.setOnClickListener(v -> {
+            boolean isChecked = ((ToggleButton)v).isChecked();
+            try {
+                DatabaseReference ref1 = database.getReference("/usr/" + user_id + "/" + username + "/prefs/" + data.getJSONObject("food").getString("foodId"));
+                if (isChecked) { //add to database
+                    ref1.setValue(data.toString());
+                } else { //remove from database
+                    ref1.removeValue();
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        });
         //map btn if the food has a company attached
         Button mapsBtn = getView().findViewById(R.id.maps_button);
         mapsBtn.setOnClickListener(this);
@@ -191,13 +254,20 @@ public class AddFoodFragment extends Fragment implements View.OnClickListener{
                     values.put(DataProvider.COLUMN_CALORIES_DATA,data.toString());
                     values.put(DataProvider.COLUMN_CALORIES_USER_ID,user_id);
                     values.put(DataProvider.COLUMN_CALORIES_VALUE,num);
-                    values.put(DataProvider.COLUMN_CALORIES_MEAL,"Breakfast");
-                    values.put(DataProvider.COLUMN_CALORIES_DATE, new SimpleDateFormat("dd-MM-yyyy", Locale.UK).format(new Date()));
+                    values.put(DataProvider.COLUMN_CALORIES_MEAL, type);
+                    values.put(DataProvider.COLUMN_CALORIES_DATE, date);
 
                     requireActivity().getContentResolver().insert(
                             DataProvider.URI_CALORIES,
                             values
                     );
+
+                    Snackbar snack = Snackbar.make(requireActivity().findViewById(R.id.container),"Item added!",Snackbar.LENGTH_LONG);
+                    snack.show();
+
+                    FragmentManager fm = getParentFragmentManager();
+                    fm.beginTransaction().remove(this).commit();
+
                 }
             }catch (NumberFormatException e){
                 e.printStackTrace();

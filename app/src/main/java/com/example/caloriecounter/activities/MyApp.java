@@ -78,7 +78,7 @@ public class MyApp extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_today, R.id.nav_help, R.id.search_food, R.id.add_food) // this is a list of all pages that can access the draser
+                R.id.nav_home, R.id.nav_help, R.id.search_food, R.id.add_food) // this is a list of all pages that can access the draser
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

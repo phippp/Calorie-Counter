@@ -1,6 +1,7 @@
 package com.example.caloriecounter.activities.fragments;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +54,9 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         //get container to hold the Snackbar in the recyclerView
         ConstraintLayout container = getView().findViewById(R.id.favourite_container);
 
+        boolean tablet = getView().findViewById(R.id.fragment_identifier) != null;
+        boolean landscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
         //get user information
         SharedPreferences pref = requireActivity().getSharedPreferences("LoggedInUser",MODE_PRIVATE);
         String username = pref.getString("username", null);
@@ -61,7 +66,13 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         recyclerView = getView().findViewById(R.id.recycler_list);
         list = new ArrayList<>();
         adapter = new FavouriteFoodAdapter(getContext(), list, username, user_id, container);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if(landscape || tablet) {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+
         recyclerView.setAdapter(adapter);
 
         //setup firebase reference and listener

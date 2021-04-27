@@ -129,6 +129,8 @@ public class SearchFoodFragment extends Fragment {
                 Fragment fragment = new AddFoodFragment();
                 Bundle b = new Bundle();
                 b.putString("data",f.getData().toString());
+                b.putString("date",date);
+                b.putString("type",type);
                 fragment.setArguments(b);
                 FragmentManager fm = getParentFragmentManager();
                 fm.beginTransaction().replace(R.id.extra_fragment,fragment).commit();

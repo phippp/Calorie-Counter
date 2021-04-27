@@ -30,6 +30,7 @@ import androidx.appcompat.widget.ShareActionProvider;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import com.example.caloriecounter.R;
@@ -51,6 +52,8 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class FoodFragment extends Fragment {
 
     private int userId;
+
+    private boolean tablet;
 
     private ConstraintLayout[] layouts = new ConstraintLayout[7];
 
@@ -93,6 +96,8 @@ public class FoodFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        tablet = getView().findViewById(R.id.extra_fragment) != null;
 
         //share button to share (the better way)
         Button shareBtn = getView().findViewById(R.id.share_button);
@@ -399,7 +404,14 @@ public class FoodFragment extends Fragment {
         b.putString("type",type);
         b.putString("date",df.format(cal.getTime()));
 
-        Navigation.findNavController(view).navigate(R.id.meal_fragment,b);
+        if(!tablet) {
+            Navigation.findNavController(view).navigate(R.id.meal_fragment, b);
+        } else {
+            Fragment fragment = new MealFragment();
+            fragment.setArguments(b);
+            FragmentManager fm = getParentFragmentManager();
+            fm.beginTransaction().replace(R.id.extra_fragment,fragment).commit();
+        }
     }
 
 }

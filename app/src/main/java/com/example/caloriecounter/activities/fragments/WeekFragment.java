@@ -32,11 +32,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class WeekFragment extends Fragment implements View.OnClickListener{
+public class WeekFragment extends Fragment implements View.OnLongClickListener{
 
     private Uri file = null;
 
-    private Chart chart;
+    private Chart food, water;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_week, container, false);
@@ -46,14 +46,16 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
 
         //create views
-        Chart chart_water = getView().findViewById(R.id.chart_water);
-        Button shareBtn = getView().findViewById(R.id.share_btn);
-        chart = getView().findViewById(R.id.chart);
+        food = getView().findViewById(R.id.chart);
+        water = getView().findViewById(R.id.chart_water);
+
+        food.setOnLongClickListener(this);
+        water.setOnLongClickListener(this);
 
         //create lists for items
         List<String> dates = new ArrayList<>();
         List<Integer> values = new ArrayList<>();
-        List<Integer> water = new ArrayList<>();
+        List<Integer> waterList = new ArrayList<>();
 
         //get user id from parent activity
         int user = ((MyApp) getActivity()).getUser_id();
@@ -92,20 +94,19 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
             }
             c.close();
             values.add((int)calories);
-            water.add(w);
+            waterList.add(w);
         }
 
         Collections.reverse(dates);
         Collections.reverse(values);
-        Collections.reverse(water);
+        Collections.reverse(waterList);
 
         TypedValue value = new TypedValue();
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.colorPrimary,value,true);
-        chart.setData(values,dates,value.data);
-        chart_water.setData(water,dates,value.data);
+        food.setData(values,dates,value.data);
+        water.setData(waterList,dates,value.data);
 
-        shareBtn.setOnClickListener(this);
 
     }
 
@@ -132,12 +133,13 @@ public class WeekFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View v) {
-        Bitmap image = convertView(chart);
+    public boolean onLongClick(View v) {
+        Bitmap image = convertView(v);
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         file = getUri(image);
         share.putExtra(Intent.EXTRA_STREAM, file);
         startActivity(Intent.createChooser(share, "Share Image"));
+        return false;
     }
 }

@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/graph_container"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:divider="@color/black"
@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="175dp"
+            android:layout_height="275dp"
             android:divider="@color/black"
             android:orientation="horizontal">
 
@@ -41,6 +41,7 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_6"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.481"
@@ -48,7 +49,7 @@
 
                 <ImageView
                     android:id="@+id/bar_6"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -71,13 +72,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_5"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_5"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -100,13 +102,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_4"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -129,13 +132,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_3"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -158,13 +162,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_2"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -187,13 +192,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_1"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -216,13 +222,14 @@
                     android:layout_weight="1"
                     android:rotation="-45"
                     android:text="2000"
+                    android:textSize="24sp"
                     app:layout_constraintBottom_toTopOf="@+id/bar_0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                     android:id="@+id/bar_0"
-                    android:layout_width="10dp"
+                    android:layout_width="20dp"
                     android:layout_height="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -250,7 +257,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_5"
@@ -258,7 +266,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_4"
@@ -266,7 +275,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_3"
@@ -274,7 +284,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_2"
@@ -282,7 +293,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_1"
@@ -290,7 +302,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/date_0"
@@ -298,7 +311,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="day" />
+                android:text="day"
+                android:textSize="22sp" />
 
         </LinearLayout>
 
@@ -306,22 +320,12 @@
             android:id="@+id/share_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/button_template"
+            android:padding="12dp"
             android:text="Share"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/details_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/graph_container"
-        app:layout_constraintTop_toTopOf="parent">
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/food_counter_food"
@@ -581,6 +585,25 @@
 
             </LinearLayout>
         </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/details_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/graph_container"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:id="@+id/extra_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

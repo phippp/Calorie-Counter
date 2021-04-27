@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_today"
-        android:name="com.example.caloriecounter.activities.fragments.TodayFragment"
-        android:label="Today"
-        tools:layout="@layout/fragment_today" />
-
-    <fragment
         android:id="@+id/nav_week"
         android:name="com.example.caloriecounter.activities.fragments.WeekFragment"
         android:label="Week"

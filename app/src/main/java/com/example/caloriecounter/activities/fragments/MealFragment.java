@@ -67,9 +67,10 @@ public class MealFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //get screen orientation
+        boolean tablet = getView().findViewById(R.id.fragment_identifier) != null;
         boolean landscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         //create recycler view and list
-        recyclerView = requireActivity().findViewById(R.id.recycler_list);
+        recyclerView = getView().findViewById(R.id.recycler_list);
         list = new ArrayList<>();
         //get userId from parent activity
         user_id = ((MyApp) requireActivity()).getUser_id();
@@ -87,7 +88,7 @@ public class MealFragment extends Fragment {
         }
         //create adapter and set layout manager depending on orientation
         adapter = new RecyclerAdapter(getContext(), list, date, type);
-        if(landscape) {
+        if(landscape && !tablet) {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
         } else {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,7 +96,7 @@ public class MealFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         //set slide left functionality when in portrait
-        if(!landscape) {
+        if(!landscape || tablet) {
             ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
                 @Override
@@ -138,14 +139,12 @@ public class MealFragment extends Fragment {
         }
 
         //update meal and date
-        TextView mealTitle = requireActivity().findViewById(R.id.meal_title);
-        TextView dateTitle = requireActivity().findViewById(R.id.date_title);
+        TextView mealTitle = getView().findViewById(R.id.meal_title);
+        TextView dateTitle = getView().findViewById(R.id.date_title);
         mealTitle.setText(type);
         dateTitle.setText(date);
 
     }
-
-
 
     public void populateAdapter(){
         //get all food items for that day and meal
@@ -175,10 +174,10 @@ public class MealFragment extends Fragment {
         //show either error or recyclerView
         if(list.size() == 0){
             recyclerView.setVisibility(View.GONE);
-            getActivity().findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.empty_message).setVisibility(View.VISIBLE);
         } else {
             recyclerView.setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.empty_message).setVisibility(View.GONE);
+            getView().findViewById(R.id.empty_message).setVisibility(View.GONE);
         }
     }
 
