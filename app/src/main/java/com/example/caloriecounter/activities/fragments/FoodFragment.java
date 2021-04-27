@@ -53,6 +53,8 @@ public class FoodFragment extends Fragment {
 
     private int userId;
 
+    private String dateInFragment, mealInFragment;
+
     private boolean tablet;
 
     private ConstraintLayout[] layouts = new ConstraintLayout[7];
@@ -98,6 +100,18 @@ public class FoodFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         tablet = getView().findViewById(R.id.extra_fragment) != null;
+
+        if(tablet && savedInstanceState!=null){
+            Bundle b = new Bundle();
+            b.putString("type",savedInstanceState.getString("meal"));
+            b.putString("date",savedInstanceState.getString("date"));
+            Fragment fragment = new MealFragment();
+            fragment.setArguments(b);
+            FragmentManager fm = getParentFragmentManager();
+            fm.beginTransaction().replace(R.id.extra_fragment,fragment).commit();
+            mealInFragment = savedInstanceState.getString("meal");
+            dateInFragment = savedInstanceState.getString("date");
+        }
 
         //share button to share (the better way)
         Button shareBtn = getView().findViewById(R.id.share_button);
@@ -153,6 +167,15 @@ public class FoodFragment extends Fragment {
         if(file != null){
             requireContext().getContentResolver().delete(file, null, null);
             file = null;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(tablet){
+            outState.putString("date",dateInFragment);
+            outState.putString("meal",mealInFragment);
         }
     }
 
@@ -411,6 +434,8 @@ public class FoodFragment extends Fragment {
             fragment.setArguments(b);
             FragmentManager fm = getParentFragmentManager();
             fm.beginTransaction().replace(R.id.extra_fragment,fragment).commit();
+            mealInFragment = type;
+            dateInFragment = df.format(cal.getTime());
         }
     }
 

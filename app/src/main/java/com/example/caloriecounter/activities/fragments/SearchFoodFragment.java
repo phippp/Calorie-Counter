@@ -62,6 +62,16 @@ public class SearchFoodFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String[] items = new String[adapter.getCount()];
+        for(int i = 0; i < adapter.getCount(); i++){
+            items[i] = adapter.getItem(i).getData().toString();
+        }
+        outState.putStringArray("data",items);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -92,25 +102,40 @@ public class SearchFoodFragment extends Fragment {
         String username = pref.getString("username",null);
         DatabaseReference ref = database.getReference("/usr/"+((MyApp)getActivity()).getUser_id()+"/"+username+"/prefs");
 
-        //load favourites into adapter before search
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot snap: snapshot.getChildren()){
+        //load favourites into adapter before search or load saved state
+        if(savedInstanceState != null){
+            String[] items = savedInstanceState.getStringArray("data");
+            if(items != null){
+                adapter.clear();
+                for(String data: items){
                     try {
-                        JSONObject food = new JSONObject(snap.getValue().toString());
+                        JSONObject food = new JSONObject(data);
                         adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food,food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
                     }catch (JSONException e){
                         e.printStackTrace();
                     }
                 }
             }
+        } else {
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot snap: snapshot.getChildren()){
+                        try {
+                            JSONObject food = new JSONObject(snap.getValue().toString());
+                            adapter.add(new FoodItem(food.getJSONObject("food").getString("label"), food,food.getJSONObject("food").getJSONObject("nutrients").getDouble("ENERC_KCAL")));
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
 
         //create API call queue
         queue = Volley.newRequestQueue(getActivity());
