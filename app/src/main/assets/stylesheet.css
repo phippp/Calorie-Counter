@@ -210,9 +210,11 @@ nav a:hover{
 }
 
 table{
+    border-collapse: collapse;
     margin-left:auto;
     margin-right: auto;
     max-width: 1000px;
+    margin-bottom: 2rem;
 }
 
 table .number{
@@ -229,7 +231,7 @@ table a{
     text-decoration: underline;
 }
 
-td{
+td, th{
     border-bottom: 1px dashed black;
     padding: 1vh 5vh 1vh 5vh;
 }
@@ -251,3 +253,54 @@ td{
 }
 
 /* SECTION 4: FAQ's */
+
+#search-input{
+    border: 1px solid #d2d2d2;
+    border-right: 0.2rem solid #d2d2d2;
+    padding: 0px 0.5rem;
+    font-size: 1rem;
+    height:100%;
+}
+
+#search-by-form label{
+    padding: 0.5rem;
+}
+
+#search-by-form button{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    overflow: hidden;
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
+}
+
+#search-by-form{
+    display: flex;
+    justify-content: flex-start;
+    /* margin: 1.2em 0rem; */
+    background: #EEEEEE;
+    align-items: center;
+    border: 0.1rem solid #d2d2d2;
+    border-radius: 10px;
+    align-items: stretch;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.search-section{
+    max-width: 1000px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 2em;
+    margin: 1rem auto;
+}
+
+.highlighter{
+    background-color: yellow;
+}
+
+.faq th, tr:nth-child(even){
+    background-color: #EEEEEE;
+}

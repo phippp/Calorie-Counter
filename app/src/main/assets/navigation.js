@@ -6,4 +6,4 @@ $( "#index" ).on( "click" ,function(event){
     window.location.href = 'index.html';
 });
 
-$.mobile.loading().hide();
+$.mobile.loading().hide(); 

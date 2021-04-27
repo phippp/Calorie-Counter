@@ -10,20 +10,105 @@
     </head>
 	<body>
 
-		<div class="nav-container">
-    		<nav>
+		<div class="nav-container"> <!-- this class applies background styling to our navigation-->
+
+    		<nav> <!-- This is a flex container and it will centers all the content that we will be showing-->
+
         		<div id="primary-nav-links">
             		<a id="index"> Tutorial</a>
-            		<a class="nav-link-active" id="faq"> FAQ</a>
+            		<a id="faq" class="nav-link-active"> FAQ</a>
         		</div>
+
     		</nav>
+
 		</div>
 		
 		<div>
+			<div class="search-section">
+				<div id="search-by-form">
+					
+					<label for="search-input">Search:</label>
+					<input type="text" name="" id="search-input" >
+					<button onclick="updateTable()"> <img src="images/search_icon.svg" alt="Search" srcset=""> </button>
+
+				</div>
+			</div>
+
+			<table class="faq">
+				<thead><th class="number"></th><th style="width: 30%">Question</th><th>Answer</th></thead>
+				<tr>
+					<td class="number"><div class="number-container"><span>1</span></div></td>
+					<td>How do I navigate between pages?</td>
+					<td>
+						You can use the navigation drawer to navigate between most pages, to access this look for the hamburger icon in the top left of the screen (☰).
+						In the case that you instead see an arrow, simply drag the left of the screen towards the middle of the screen this will also allow you to access the navigation menu.
+
+					</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>2</span></div></td>
+					<td>How do I add food?</td>
+					<td>To add food, you first want to navigate from the home page to the food page, here you can click on the hamburger icon (...)
+						to open a menu, the first option will allow you to search for food to add.
+					</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>3</span></div></td>
+					<td>How do I add water?</td>
+					<td>
+						You can add water 2 ways:
+						<br>
+						<ul>
+							<li>From the home page you can simply click the +/- buttons to add water to todays count.</li>
+							<li>If however you want to add water to any other days you can navigate to the water page where you can add water to any of the last 7 days.</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>4</span></div></td>
+					<td>Can I add food to previous days if I forget to add it on the day?</td>
+					<td>Yes, when you are on the food page, simply click on any one of the previous 7 days to update food for that day.</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>5</span></div></td>
+					<td>How much is 1 glass of water?</td>
+					<td>A glass of water is assumed to be on average 250ml.</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>6</span></div></td>
+					<td>Why can't I find compound foods (tea and milk)?</td>
+					<td>Some items don't exist in the Edamam food database and as such it may require you to enter them as individual items (in this case tea, then milk seperately).</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>7</span></div></td>
+					<td>Why aren't there any results for the food I'm searching?</td>
+					<td>The database may not have the food stored, this could apply to certain branded items.
+						Alternatively, it could be that there is a leading space before the food, please check that instead of " item" you have put in "item" (without the quotation marks).
+					</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>8</span></div></td>
+					<td>Can you add your own items?</td>
+					<td>No, as items are from an external database, this means food can't be added to the database.</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>9</span></div></td>
+					<td>Can I use multiple accounts to track food for my whole family?</td>
+					<td>Yes by registering multiple account you can login and logout, adding food to each account seperately.</td>
+				</tr>
+				<tr>
+					<td class="number"><div class="number-container"><span>10</span></div></td>
+					<td>When I'm on the meal page and I slide an item it gets stuck with a purple bar, why is this?</td>
+					<td>This is not intentional, sometimes it doesn't display the correct menu until the second swipe.
+						If you have another item long hold to trigger the menu change and then it should work fine.
+					</td>
+				</tr>
+			</table>
 
 		</div>
 
-		<script type="text/javascript" src="navigation.js"></script>
-
+		<script src="search.js"></script>
+		<script src="navigation.js"></script>
+	
 	</body>
 </html>

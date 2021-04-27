@@ -20,9 +20,9 @@ function showSlides(e) {
 showSlides(slideIndex);
 
 $( ".image-swipeable" ).on( "swipeleft", function(event){
-    plusSlides(1);
+    plusSlides(-1);
 });
 
 $( ".image-swipeable" ).on( "swiperight", function(event){
-    plusSlides(-1);
+    plusSlides(1);
 });

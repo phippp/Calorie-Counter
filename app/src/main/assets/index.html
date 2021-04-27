@@ -4,18 +4,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
 		<script type="text/javascript" src="jquery.mobile-1.4.4.min.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
 		<link rel="stylesheet" href="stylesheet.css">
         <title>Help Page</title>
     </head>
 	<body>
 
-		<div class="nav-container">
-    		<nav>
+		<div class="nav-container"> <!-- this class applies background styling to our navigation-->
+
+    		<nav> <!-- This is a flex container and it will centers all the content that we will be showing-->
+
         		<div id="primary-nav-links">
-            		<a class="nav-link-active" id="index"> Tutorial</a>
+            		<a id="index" class="nav-link-active"> Tutorial</a>
             		<a id="faq"> FAQ</a>
         		</div>
+
     		</nav>
+
 		</div>
 		
 		<div class = "gallery-container">
@@ -266,8 +271,8 @@
 
         </div>
 
-        <script type="text/javascript" src="navigation.js"></script>
 		<script type="text/javascript" src="gallery.js"></script>
+        <script type="text/javascript" src="navigation.js"></script>
 
 	</body>
 </html>
