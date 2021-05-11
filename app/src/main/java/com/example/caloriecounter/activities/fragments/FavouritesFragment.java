@@ -44,6 +44,8 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
     List<FoodItem> list;
     FavouriteFoodAdapter adapter;
 
+    TextView title;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_favourites, container, false);
     }
@@ -77,19 +79,20 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
 
         //setup firebase reference and listener
         ref = database.getReference("/usr/"+ user_id +"/"+ username +"/prefs");
-        ref.addValueEventListener(this);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ref.removeEventListener(this);
+        title = getView().findViewById(R.id.favourite_count);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         ref.addValueEventListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        ref.removeEventListener(this);
+        super.onDestroy();
     }
 
     @Override
@@ -106,8 +109,7 @@ public class FavouritesFragment extends Fragment implements ValueEventListener{
         }
         adapter.notifyDataSetChanged();
         //update number of favourites
-        TextView tv = getView().findViewById(R.id.favourite_count);
-        tv.setText(getString(R.string.favourite,list.size()));
+        title.setText(getString(R.string.favourite, list.size()));
     }
 
     @Override
